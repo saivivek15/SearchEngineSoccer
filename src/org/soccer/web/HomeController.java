@@ -33,8 +33,6 @@ public class HomeController {
 	public String index(Map<String, Object> model) {
 
 		logger.debug("index() is executed!");
-
-		model.put("title", homeService.getTitle(""));
 		model.put("msg", homeService.getDesc());
 		
 		return "index";

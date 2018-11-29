@@ -14,20 +14,9 @@ public class HomeService {
 
 		logger.debug("getDesc() is executed!");
 
-		return "Gradle + Spring MVC Hello World Example";
+		return "Hello World";
 
 	}
 
-	public String getTitle(String name) {
-
-		logger.debug("getTitle() is executed! $name : {}", name);
-
-		if(StringUtils.isEmpty(name)){
-			return "Hello World";
-		}else{
-			return "Hello " + name;
-		}
-		
-	}
 
 }
