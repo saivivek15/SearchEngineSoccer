@@ -1,13 +1,14 @@
 package org.soccer.indexing;
 
 public class DocEntity {
-
+	
 	private String contents;
 	private String url;
 	private String filename;
 	private float hitScore;
 	private int clusterId;
 	private float rankScore;
+	
 	public String getContents() {
 		return contents;
 	}

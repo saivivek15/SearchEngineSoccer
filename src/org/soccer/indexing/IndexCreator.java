@@ -64,13 +64,13 @@ public class IndexCreator {
     public static void main(String[] args) throws Exception {
         IndexCreator index = new IndexCreator(IndexCreator.indexLocation);
         index.readFiles();
-	    ArrayList<DocResult> res = QueryProcessor.processQuery("ronaldo");
-		for(DocResult dr: res){
-			System.out.println("url: "+dr.getUrlOfDoc());
+	    ArrayList<DocEntity> res = QueryExecution.processQuery("ronaldo");
+		for(DocEntity dr: res){
+			System.out.println("url: "+dr.getUrl());
 			System.out.println("hits: "+dr.getHitScore());
 			System.out.println("rank score: "+dr.getRankScore());
-			System.out.println("cluster id: "+dr.getClusterID());
-			System.out.println("contents: "+ dr.getDocContents());
+			System.out.println("cluster id: "+dr.getClusterId());
+			System.out.println("contents: "+ dr.getContents());
 			System.out.println("#############################");
 
 		}
