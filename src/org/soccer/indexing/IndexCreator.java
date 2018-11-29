@@ -9,7 +9,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import org.apache.lucene.analysis.Analyzer;
-import org.apache.lucene.analysis.snowball.SnowballAnalyzer;
+import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.document.Field;
 import org.apache.lucene.document.StringField;
@@ -27,7 +27,7 @@ import org.apache.lucene.util.Version;
 public class IndexCreator {
 
 
-    public static Analyzer analyzer = new SnowballAnalyzer(Version.LUCENE_40, "English");
+    public static Analyzer analyzer = new StandardAnalyzer(Version.LUCENE_42);
     private IndexWriter writer;
     public static String indexLocation = "/Users/vivek/Desktop/luceneIndex/index_snow.fl";
     String docLocation = "/Users/vivek/Desktop/data1/";
@@ -36,12 +36,12 @@ public class IndexCreator {
 
     public void readFiles() throws Exception {
     	getUrlsMap(urlLocation);
-//        File[] listOfFiles = new File(docLocation).listFiles();
-//        for (File file : listOfFiles) {
-//            indexFileOrDirectory(file.getAbsolutePath(), file.getName());
-//           // System.out.println(file.getName());
-//        }
-//        closeIndex();
+        File[] listOfFiles = new File(docLocation).listFiles();
+        for (File file : listOfFiles) {
+            indexFileOrDirectory(file.getAbsolutePath(), file.getName());
+           // System.out.println(file.getName());
+        }
+        closeIndex();
     }
     public void getUrlsMap(String urlLocation) throws IOException{
     	FileReader fr = new FileReader(new File(urlLocation));
@@ -55,8 +55,9 @@ public class IndexCreator {
         }
     }
     public IndexCreator(String indexDir) throws IOException {
+    //	FSDirectory dir = FSDirectory.open(FileSystems.getDefault().getPath(indexDir));
         FSDirectory dir = FSDirectory.open(new File(indexDir));
-        IndexWriterConfig config = new IndexWriterConfig(Version.LUCENE_40, analyzer);
+        IndexWriterConfig config = new IndexWriterConfig(Version.LUCENE_42, analyzer);
         writer = new IndexWriter(dir, config);
     }
 

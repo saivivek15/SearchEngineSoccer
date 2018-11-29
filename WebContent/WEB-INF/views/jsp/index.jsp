@@ -23,6 +23,7 @@
 	<div class="container">
 
 		<div align="left" class="main">
+		<br>
 			<form class="form-inline" action="search" method="post">
 				<div class="form-group">
 					<label class="sr-only">Search:</label> <input placeholder="enter soccer query" style="width: 500px"
@@ -32,6 +33,7 @@
 				<input class="btn btn-primary" type="submit" name="search"
 					value="Search">
 			</form>
+			<br/>
 		</div>
 				<div class="lSearch">
 			<ul class="nav nav-tabs">
@@ -44,10 +46,9 @@
 
 			</ul>
 		</div>
-		<div class="tab-content searchRes"
-			style="position: fixed; width: 48%; height: 90%; margin-top: 40px; overflow-y: scroll; text-align: left;">
-			<div id="hitSearch" class="tab-pane fade in active">
-				<h3>Hits Search</h3>
+		<div class="tab-content searchRes" style="position: fixed; width: 90%; height: 90%; margin-top: 40px; overflow-y: scroll; text-align: left;">
+	<div id="hitSearch" class="tab-pane fade in active">
+	
 				<c:choose>
 					<c:when test="${records.size()!=0}">
 						<c:forEach items="${records}" var="doc" varStatus="recordIndex">

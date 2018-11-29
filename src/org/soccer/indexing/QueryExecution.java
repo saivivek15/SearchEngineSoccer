@@ -21,7 +21,7 @@ public class QueryExecution {
 		IndexReader reader = DirectoryReader.open(FSDirectory.open(new File(IndexCreator.indexLocation)));
 		IndexSearcher searcher = new IndexSearcher(reader);
 
-		Query q = new QueryParser(Version.LUCENE_40, "content", IndexCreator.analyzer).parse(s);
+		Query q = new QueryParser(Version.LUCENE_42, "content", IndexCreator.analyzer).parse(s);
 		TopDocs topDocs = searcher.search(q, 100);
 
 		ScoreDoc[] hits = topDocs.scoreDocs;
