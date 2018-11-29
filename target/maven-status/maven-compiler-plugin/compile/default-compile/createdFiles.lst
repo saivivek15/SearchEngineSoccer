@@ -1,0 +1,5 @@
+org/soccer/frontend/MainController.class
+org/soccer/crawling/Crawler.class
+org/soccer/queryExpansion/DocResult.class
+org/soccer/indexing/IndexCreator.class
+org/soccer/crawling/Controller.class
