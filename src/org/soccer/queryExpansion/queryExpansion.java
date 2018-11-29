@@ -1,5 +1,8 @@
 package org.soccer.queryExpansion;
 
+import org.soccer.indexing.DocEntity;
+import org.soccer.indexing.QueryExecution;
+
 import javax.xml.bind.Element;
 import java.io.IOException;
 import java.util.*;
@@ -27,20 +30,52 @@ public class queryExpansion {
 
     }
 
-    public static String buildQueryExpansionString(String query) throws IOException{
+    public static String buildQueryExpansionString(String query) throws Exception {
 
         wordObj[][] matrix = pseudoRelevanceFeedBackProcessor(query);
+
+        List<wordObj> list = new ArrayList<>();
+        for(wordObj[] words: matrix){
+            for(wordObj word: words){
+                if (word != null){
+                    list.add(word);
+                }
+            }
+        }
+
+        Collections.sort(list, new Comparator<wordObj>() {
+            @Override
+            public int compare(final wordObj o1, final wordObj o2) {
+                return o1.val >= o2.val ? 1 : -1;
+            }
+        });
+
+        LinkedHashSet<String> set = new LinkedHashSet<>();
+        for(int i = list.size() - 1; i > 0; i--){
+            set.add(list.get(i).v);
+        }
+
+        return query+" "+String.join(" ", set);
+
     }
 
-    public static wordObj[][] pseudoRelevanceFeedBackProcessor(String query) throws IOException {
+    public static wordObj[][] pseudoRelevanceFeedBackProcessor(String query) throws Exception {
 
         /*
 
         QUERY INDEX FROM THE GIVEN QUERY TO GET RESULTS
 
          */
+        ArrayList<DocEntity> res = QueryExecution.processQuery(query);
 
         String[] docs = new String[10];
+        int i = 0;
+        for(DocEntity dr: res) {
+            if (i >= 10){
+                break;
+            }
+            docs[i++] = dr.getContents();
+        }
 
         queryProcessor processor = new queryProcessor();
         processor.parseDocs(Arrays.asList(docs));
@@ -160,6 +195,13 @@ public class queryExpansion {
 
         return elements;
 
+    }
+
+    public static void main(String[] args) throws Exception{
+
+        queryExpansion o = new queryExpansion();
+
+        System.out.println(o.buildQueryExpansionString("messi"));
     }
 }
 
