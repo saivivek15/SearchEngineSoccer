@@ -15,7 +15,7 @@ public class HomeService {
 
 	private static final Logger logger = LoggerFactory.getLogger(HomeService.class);
 
-	public ArrayList<DocEntity> getDocEntites(String searchText) throws Exception {
+	public ArrayList<DocEntity> getDocEntites(String query) throws Exception {
 
 		try {
 			File file = new File(IndexCreator.indexLocation);
@@ -28,29 +28,30 @@ public class HomeService {
 		}
 		
 		
-		String[] texts = searchText.trim().split(" ");
-		String query = "";
+		String[] texts = query.trim().split(" ");
+		String q = "";
 		for (int i = 0; i < texts.length - 1; i++) {
-			query += texts[i] + " AND ";
+			q += texts[i] + " AND ";
 		}
-		query += texts[texts.length - 1];
+		q += texts[texts.length - 1];
 		logger.debug("query is generated");
 		
-		ArrayList<DocEntity> dr = QueryExecution.processQuery(query);
+		ArrayList<DocEntity> dr = QueryExecution.processQuery(q);
 		logger.debug("query is processed and results are fetched");
 		
-		String[] elements = searchText.split(" ");
-		StringBuilder newQuery = new StringBuilder();
-		if (elements != null && elements.length > 1) {
-			for (String word : elements) {
-				newQuery.append(word);
-				newQuery.append("%20");
-			}
-			query = newQuery.toString();
-		}
+//		String[] elements = query.split(" ");
+//		StringBuilder newQuery = new StringBuilder();
+//		if (elements != null && elements.length > 1) {
+//			for (String word : elements) {
+//				newQuery.append(word);
+//				newQuery.append("%20");
+//			}
+//			q = newQuery.toString();
+//		}
 
 		return dr;
 	}
 
+	
 
 }

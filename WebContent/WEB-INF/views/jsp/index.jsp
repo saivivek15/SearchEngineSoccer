@@ -5,11 +5,12 @@
 <head>
 <title>IR Project</title>
 
-<spring:url value="/resources/core/css/hello.css" var="coreCss" />
-<spring:url value="/resources/core/css/bootstrap.min.css" var="bootstrapCss" />
-<link href="${bootstrapCss}" rel="stylesheet" />
-<link href="${coreCss}" rel="stylesheet" />
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+<link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet"/>
 </head>
+
 
 <nav class="navbar navbar-inverse navbar-fixed-top">
 	<div class="container">
@@ -27,8 +28,8 @@
 			<form class="form-inline" action="search" method="post">
 				<div class="form-group">
 					<label class="sr-only">Search:</label> <input placeholder="enter soccer query" style="width: 500px"
-						class="form-control" type="text" name="searchText"
-						value="${searchText}" >
+						class="form-control" type="text" name="query"
+						value="${query}" >
 				</div>
 				<input class="btn btn-primary" type="submit" name="search"
 					value="Search">
@@ -37,9 +38,8 @@
 		</div>
 				<div class="lSearch">
 			<ul class="nav nav-tabs">
-				<li class="active"><a data-toggle="tab" href="#hitSearch">Hits
-						Search</a></li>
-				<li><a data-toggle="tab" href="#pageRank">VSM + Page Rank</a></li>
+				<li class="active"><a data-toggle="tab" href="#hitSearch">Hits Search</a></li>
+				<li><a data-toggle="tab" href="#googleSearch">Google Search</a></li>
 				<li><a data-toggle="tab" href="#flatCluster">K-Means</a></li>
 				<li><a data-toggle="tab" href="#singleCluster">Agglomerative</a></li>
 				<li><a data-toggle="tab" href="#avgCluster">Query Expansion</a></li>
@@ -50,8 +50,31 @@
 	<div id="hitSearch" class="tab-pane fade in active">
 	
 				<c:choose>
-					<c:when test="${records.size()!=0}">
-						<c:forEach items="${records}" var="doc" varStatus="recordIndex">
+					<c:when test="${DocEntities.size()!=0}">
+						<c:forEach items="${DocEntities}" var="doc" varStatus="recordIndex">
+							<span class="titleres"> <strong><a
+									href='<c:out value="${doc.url}"/>'>
+									</a></strong>
+							</span><br />
+							<a href='<c:out value="${doc.url}"/>'><c:out
+									value="${doc.url}" /></a>
+							<br>
+										${doc.contents}
+										<br />
+							<br />
+						</c:forEach>
+					</c:when>
+					<c:otherwise>
+						<p>No Result</p>
+					</c:otherwise>
+				</c:choose>
+				<br>
+			</div>
+		<div id="googleSearch" class="tab-pane fade in active">
+	
+				<c:choose>
+					<c:when test="${googleDE.size()!=0}">
+						<c:forEach items="${googleDE}" var="doc" varStatus="recordIndex">
 							<span class="titleres"> <strong><a
 									href='<c:out value="${doc.url}"/>'>
 									</a></strong>
