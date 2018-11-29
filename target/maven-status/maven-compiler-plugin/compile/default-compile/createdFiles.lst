@@ -1,7 +1,14 @@
-org/soccer/web/HomeController.class
+org/soccer/queryExpansion/stemHelper.class
+org/soccer/queryExpansion/queryExpansion$2.class
 org/soccer/indexing/IndexCreator.class
+org/soccer/queryExpansion/Stemmer.class
+org/soccer/queryExpansion/queryExpansion$1.class
 org/soccer/indexing/DocEntity.class
 org/soccer/indexing/QueryExecution.class
+org/soccer/queryExpansion/queryExpansion.class
+org/soccer/service/HomeService.class
+org/soccer/web/HomeController.class
+org/soccer/queryExpansion/queryProcessor.class
 org/soccer/crawling/Crawler.class
 org/soccer/crawling/Controller.class
-org/soccer/service/HomeService.class
+org/soccer/queryExpansion/queryExpansion$wordObj.class
