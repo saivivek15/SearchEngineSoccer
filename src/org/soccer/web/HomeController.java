@@ -6,6 +6,7 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.soccer.indexing.DocEntity;
+import org.soccer.service.GoogleService;
 import org.soccer.service.HomeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -18,12 +19,14 @@ import org.springframework.web.bind.annotation.RequestParam;
 @Controller
 public class HomeController {
 
-	private final Logger logger = LoggerFactory.getLogger(HomeController.class);
-	private final HomeService homeService;
-
+	private Logger logger = LoggerFactory.getLogger(HomeController.class);
+	private HomeService homeService;
+	private GoogleService googleService;
+	
 	@Autowired
-	public HomeController(HomeService homeService) {
+	public HomeController(HomeService homeService, GoogleService googleService) {
 		this.homeService = homeService;
+		this.googleService = googleService;
 	}
 
 	@RequestMapping(value = "/", method = RequestMethod.GET)
@@ -35,14 +38,16 @@ public class HomeController {
 	
 	
 	@RequestMapping("/search")
-	public String redirectDynamicWelcomePage(ModelMap model, @RequestParam("searchText") String searchText)
+	public String redirectDynamicWelcomePage(ModelMap model, @RequestParam("query") String query)
 			throws Exception {
 		
-		ArrayList<DocEntity> dr = homeService.getDocEntites(searchText);
+		ArrayList<DocEntity> de = homeService.getDocEntites(query);
+		ArrayList<DocEntity> googleDE = googleService.getGoogleAPIResults(query);
 		
-		model.addAttribute("searchText", searchText);
-		model.addAttribute("records", dr);
 		
+		model.addAttribute("query", query);
+		model.addAttribute("DocEntities", de);
+		model.addAttribute("googleDE",googleDE);
 		logger.debug("search executed!");
 		
 		return "index";
