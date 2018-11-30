@@ -17,9 +17,9 @@ public class Crawler extends WebCrawler {
     
     private final static Pattern FILTERS = Pattern.compile(".*(\\.(css|js|gif|jpg|png|mp3|mp4|zip|gz))$");
 
-    private final String basePath = "/Users/vivek/Desktop/data1";
-    private final String graphPath = "/Users/vivek/Desktop/graph1.txt";
-    private final String urlsPath = "/Users/vivek/Desktop/urls1.txt";
+    private final String basePath = "/Users/vivek/Desktop/data";
+    private final String graphPath = "/Users/vivek/Desktop/graph.txt";
+    private final String urlsPath = "/Users/vivek/Desktop/urls.txt";
 
 
      @Override
@@ -37,8 +37,8 @@ public class Crawler extends WebCrawler {
 
          if (page.getParseData() instanceof HtmlParseData) {
              HtmlParseData htmlParseData = (HtmlParseData) page.getParseData();
-             String content = String.join(" ", htmlParseData.getTitle(), htmlParseData.getText());
-             String edge = String.join(" ", String.valueOf(parentDocId), String.valueOf(docId), System.lineSeparator());
+             String content = new String(" "+ htmlParseData.getTitle()+"::"+htmlParseData.getText());
+             String edge = new String(" "+ String.valueOf(parentDocId)+ String.valueOf(docId)+ System.lineSeparator());
              try {
                  Files.write(Paths.get(basePath, + docId + ".txt"), content.getBytes());
                  Files.write(Paths.get(graphPath), edge.getBytes(), StandardOpenOption.APPEND);
