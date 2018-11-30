@@ -127,6 +127,110 @@
 				</c:choose>
 				<br>
 			</div>
+			<div id="#singleLinkageCluster" class="tab-pane fade in active">
+				<c:choose>
+					<c:when test="${singleClusterDE.size()!=0}">
+						<c:forEach items="${singleClusterDE}" var="doc"
+							varStatus="recordIndex">
+							<span class="titleres"> <strong><a
+									href='<c:out value="${doc.url}"/>'> </a></strong>
+							</span>
+							<br />
+							<a href='<c:out value="${doc.url}"/>'><c:out
+									value="${doc.url}" /></a>
+							<br>
+										${doc.contents}
+										<br />
+							<br>
+										Cluster Id:  ${doc.clusterId}
+										<br />
+							<br />
+						</c:forEach>
+					</c:when>
+					<c:otherwise>
+						<p>No Result</p>
+					</c:otherwise>
+				</c:choose>
+				<br>
+			</div>
+			<div id="#avgLinkageCluster" class="tab-pane fade in active">
+				<c:choose>
+					<c:when test="${avgClusterDE.size()!=0}">
+						<c:forEach items="${avgClusterDE}" var="doc"
+							varStatus="recordIndex">
+							<span class="titleres"> <strong><a
+									href='<c:out value="${doc.url}"/>'> </a></strong>
+							</span>
+							<br />
+							<a href='<c:out value="${doc.url}"/>'><c:out
+									value="${doc.url}" /></a>
+							<br>
+										${doc.contents}
+										<br />
+							<br>
+										Cluster Id:  ${doc.clusterId}
+										<br />
+							<br />
+						</c:forEach>
+					</c:when>
+					<c:otherwise>
+						<p>No Result</p>
+					</c:otherwise>
+				</c:choose>
+				<br>
+			</div>
+			<div id="#weightedLinkageCluster" class="tab-pane fade in active">
+				<c:choose>
+					<c:when test="${weightedClusterDE.size()!=0}">
+						<c:forEach items="${weightedClusterDE}" var="doc"
+							varStatus="recordIndex">
+							<span class="titleres"> <strong><a
+									href='<c:out value="${doc.url}"/>'> </a></strong>
+							</span>
+							<br />
+							<a href='<c:out value="${doc.url}"/>'><c:out
+									value="${doc.url}" /></a>
+							<br>
+										${doc.contents}
+										<br />
+							<br>
+										Cluster Id:  ${doc.clusterId}
+										<br />
+							<br />
+						</c:forEach>
+					</c:when>
+					<c:otherwise>
+						<p>No Result</p>
+					</c:otherwise>
+				</c:choose>
+				<br>
+			</div>
+			<div id="#completeLinkageCluster" class="tab-pane fade in active">
+				<c:choose>
+					<c:when test="${completeClusterDE.size()!=0}">
+						<c:forEach items="${completeClusterDE}" var="doc"
+							varStatus="recordIndex">
+							<span class="titleres"> <strong><a
+									href='<c:out value="${doc.url}"/>'> </a></strong>
+							</span>
+							<br />
+							<a href='<c:out value="${doc.url}"/>'><c:out
+									value="${doc.url}" /></a>
+							<br>
+										${doc.contents}
+										<br />
+							<br>
+										Cluster Id:  ${doc.clusterId}
+										<br />
+							<br />
+						</c:forEach>
+					</c:when>
+					<c:otherwise>
+						<p>No Result</p>
+					</c:otherwise>
+				</c:choose>
+				<br>
+			</div>
 
 			<div id="bingSearch" class="tab-pane fade in active">
 

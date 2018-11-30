@@ -54,6 +54,11 @@ public class HomeController {
 		ArrayList<DocEntity> googleDE = googleService.getGoogleAPIResults(query);
 		ArrayList<DocEntity> bingDE = bingService.getBingAPIResults(query);
 		ArrayList<DocEntity> flatClusterDE = clusteringService.getFlatClusterResult(de);
+		ArrayList<DocEntity> singleClusterDE = clusteringService.getSingleClusterResult(de);
+		ArrayList<DocEntity> avgClusterDE = clusteringService.getAvgClusterResult(de);
+		ArrayList<DocEntity> completeClusterDE = clusteringService.getCompleteClusterResult(de);
+		ArrayList<DocEntity> weightedClusterDE = clusteringService.getWeightedClusterResult(de);
+
 		String expandQuery = queryExpansionService.getExpandedQuery(query);
 		ArrayList<DocEntity> expandDE = homeService.getDocEntites(expandQuery);
 		String eq = new String("Expanded Query: " + expandQuery);
@@ -63,6 +68,10 @@ public class HomeController {
 		model.addAttribute("googleDE",googleDE);
 		model.addAttribute("bingDE",bingDE);
 		model.addAttribute("flatClusterDE",flatClusterDE);
+		model.addAttribute("singleClusterDE",flatClusterDE);
+		model.addAttribute("avgClusterDE",flatClusterDE);
+		model.addAttribute("completeClusterDE",flatClusterDE);
+		model.addAttribute("weightedClusterDE",flatClusterDE);
 		model.addAttribute("expandQuery",eq);
 		model.addAttribute("expandDE", expandDE);
 		
