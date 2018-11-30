@@ -18,6 +18,9 @@ import org.apache.lucene.index.IndexWriterConfig;
 import org.apache.lucene.store.FSDirectory;
 import org.apache.lucene.util.Version;
 
+import org.soccer.clustering.FlatClustering;
+import org.soccer.clustering.HeirarClustering;
+
 /**
  * @author Michael Mugo
  *
@@ -29,7 +32,7 @@ public class IndexCreator {
 
     public static Analyzer analyzer = new StandardAnalyzer(Version.LUCENE_42);
     private IndexWriter writer;
-    public static String indexLocation = "/Users/tharunngolthi/Downloads/luceneIndex/index_snow.fl";
+    public static String indexLocation = "/Users/sobellan/Desktop/luceneIndex/index_snow.fl";
     String docLocation = "/Users/vivek/Desktop/data1/";
     String urlLocation = "/Users/vivek/Desktop/urls1.txt/";
     public HashMap<String, String> urlMap = new HashMap<>();
@@ -63,17 +66,63 @@ public class IndexCreator {
 
 
     public static void main(String[] args) throws Exception {
-        IndexCreator index = new IndexCreator(IndexCreator.indexLocation);
-        index.readFiles();
+        //IndexCreator index = new IndexCreator(IndexCreator.indexLocation);
+        //index.readFiles();
 	    ArrayList<DocEntity> res = QueryExecution.processQuery("ronaldo");
-		for(DocEntity dr: res){
-			System.out.println("url: "+dr.getUrl());
-			System.out.println("hits: "+dr.getHitScore());
-			System.out.println("rank score: "+dr.getRankScore());
-			System.out.println("cluster id: "+dr.getClusterId());
-			System.out.println("contents: "+ dr.getContents());
-			System.out.println("#############################");
-
+//		for(DocEntity dr: res){
+//			System.out.println("url: "+dr.getUrl());
+//			System.out.println("hits: "+dr.getHitScore());
+//			System.out.println("rank score: "+dr.getRankScore());
+//			System.out.println("cluster id: "+dr.getClusterId());
+//			System.out.println("contents: "+ dr.getContents());
+//			System.out.println("#############################");
+//
+//		}
+		
+		ArrayList<DocEntity> flatClusteredResult = new ArrayList<>();
+		ArrayList<DocEntity> avgClusteredResult = new ArrayList<>();
+		ArrayList<DocEntity> singleClusteredResult = new ArrayList<>();
+		ArrayList<DocEntity> weightedClusteredResult = new ArrayList<>();
+		ArrayList<DocEntity> completeClusteredResult = new ArrayList<>();
+		
+		if (res.size() > 20) {
+			flatClusteredResult = FlatClustering.getFlatCluster(res);
+			avgClusteredResult = HeirarClustering.getAverageLinkageCluster(res);
+			singleClusteredResult = HeirarClustering.getSingleLinkageCluster(res);
+			weightedClusteredResult = HeirarClustering.getWeightedLinkageCluster(res);
+			completeClusteredResult = HeirarClustering.getCompleteLinkageCluster(res);
+		}
+		
+		System.out.println("Clustering results");
+		System.out.println("Flat Clustering: ");
+		System.out.println("Results size: " + res.size());
+		System.out.println("Flat clustered result size: " + flatClusteredResult.size());
+		for (DocEntity dr:flatClusteredResult) {
+			System.out.println("Cluster name: " + dr.getClusterId());
+		}
+		System.out.println("*******************************");
+		System.out.println("Average Linkage");
+		System.out.println("Avg clustered result size: " + avgClusteredResult.size());
+		for (DocEntity dr:avgClusteredResult) {
+			System.out.println("Cluster name: " + dr.getClusterId());
+		}
+		System.out.println("*******************************");
+		System.out.println("Single Linkage");
+		System.out.println("single clustered result size: " + singleClusteredResult.size());
+		for (DocEntity dr:singleClusteredResult) {
+			System.out.println("Cluster name: " + dr.getClusterId());
+		}
+		System.out.println("*******************************");
+		System.out.println("Weighted Linkage");
+		System.out.println("weight clustered result size: " + weightedClusteredResult.size());
+		for (DocEntity dr:weightedClusteredResult) {
+			System.out.println("Cluster name: " + dr.getClusterId());
+		}
+		System.out.println("*******************************");
+		System.out.println("Complete Linkage");
+		System.out.println("complete clustered result size: " + completeClusteredResult.size());
+		for (DocEntity dr:completeClusteredResult) {
+			System.out.println("Cluster name: " + dr.getClusterId());
 		}
     }
 
