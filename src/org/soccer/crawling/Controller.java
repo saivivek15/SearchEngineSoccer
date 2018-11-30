@@ -58,10 +58,6 @@ public class Controller {
 		controller.addSeed("https://en.wikipedia.org/wiki/Association_football_club_names");
 		controller.addSeed("https://en.wikipedia.org/wiki/La_Liga");
 		controller.addSeed("https://en.wikipedia.org/wiki/Premier_League");
-		controller.addSeed("http://www.fifa.com/");
-		controller.addSeed("http://www.conmebol.com/en");
-		controller.addSeed("http://www.the-afc.com/");
-		controller.addSeed("http://www.cafonline.com/");
 		controller.addSeed("http://www.oceaniafootball.com/ofc/");
 		controller.addSeed("http://www.laliga.es/en");
 		controller.addSeed("http://www.concacaf.com/");
@@ -82,6 +78,10 @@ public class Controller {
 		controller.addSeed("http://edition.cnn.com/sport/football");
 		controller.addSeed("http://www.offthepost.info/");
 		controller.addSeed("http://www.vitalfootball.co.uk/");
+		controller.addSeed("http://www.fifa.com/");
+		controller.addSeed("http://www.conmebol.com/en");
+		controller.addSeed("http://www.the-afc.com/");
+		controller.addSeed("http://www.cafonline.com/");
 
         controller.start(Crawler.class, numberOfCrawlers);
     }
