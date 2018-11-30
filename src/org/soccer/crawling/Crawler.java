@@ -38,7 +38,7 @@ public class Crawler extends WebCrawler {
          if (page.getParseData() instanceof HtmlParseData) {
              HtmlParseData htmlParseData = (HtmlParseData) page.getParseData();
              String content = new String(" "+ htmlParseData.getTitle()+"::"+htmlParseData.getText());
-             String edge = new String(" "+ String.valueOf(parentDocId)+ String.valueOf(docId)+ System.lineSeparator());
+             String edge = new String(String.valueOf(parentDocId)+" "+ String.valueOf(docId)+ System.lineSeparator());
              try {
                  Files.write(Paths.get(basePath, + docId + ".txt"), content.getBytes());
                  Files.write(Paths.get(graphPath), edge.getBytes(), StandardOpenOption.APPEND);
