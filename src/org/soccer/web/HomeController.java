@@ -68,10 +68,10 @@ public class HomeController {
 		model.addAttribute("googleDE",googleDE);
 		model.addAttribute("bingDE",bingDE);
 		model.addAttribute("flatClusterDE",flatClusterDE);
-		model.addAttribute("singleClusterDE",flatClusterDE);
-		model.addAttribute("avgClusterDE",flatClusterDE);
-		model.addAttribute("completeClusterDE",flatClusterDE);
-		model.addAttribute("weightedClusterDE",flatClusterDE);
+		model.addAttribute("singleClusterDE",singleClusterDE);
+		model.addAttribute("avgClusterDE",avgClusterDE);
+		model.addAttribute("completeClusterDE",completeClusterDE);
+		model.addAttribute("weightedClusterDE",weightedClusterDE);
 		model.addAttribute("expandQuery",eq);
 		model.addAttribute("expandDE", expandDE);
 		
