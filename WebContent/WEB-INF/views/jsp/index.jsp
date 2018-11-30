@@ -121,7 +121,7 @@
 										${doc.contents}
 										<br />
 							<br>
-										${doc.clusterId}
+										"Cluster Id: " ${doc.clusterId}
 										<br />
 							<br />
 						</c:forEach>
