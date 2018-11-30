@@ -69,11 +69,7 @@ public class queryExpansion {
 
     public static wordObj[][] pseudoRelevanceFeedBackProcessor(String query) throws Exception {
 
-        /*
-
-        QUERY INDEX FROM THE GIVEN QUERY TO GET RESULTS
-
-         */
+        //QUERY INDEX FROM THE GIVEN QUERY TO GET RESULTS
         ArrayList<DocEntity> res = QueryExecution.processQuery(query);
 
         String[] docs = new String[10];
@@ -162,9 +158,9 @@ public class queryExpansion {
         wordObj[][] elements = new wordObj[strs.size()][3];
 
         int idx = 0;
+        PriorityQueue<wordObj> queue;
         for(String word: strs) {
-            final PriorityQueue<wordObj> queue = new PriorityQueue<>(3, new Comparator<wordObj>() {
-
+             queue = new PriorityQueue<>(3, new Comparator<wordObj>() {
                 @Override
                 public int compare(final wordObj o1, final wordObj o2) {
                     return o1.val >= o2.val ? 1 : -1;
@@ -193,7 +189,7 @@ public class queryExpansion {
                     queue.add(new wordObj(metricMatrix[i][j].u, stemMap.get(metricMatrix[i][j].v).iterator().next(), metricMatrix[i][j].val));
                 }
 
-                if (queue.size() > 3){
+                if (queue.size() >= 4){
                     queue.poll();
                 }
             }
@@ -209,7 +205,7 @@ public class queryExpansion {
 
         queryExpansion o = new queryExpansion();
 
-        System.out.println(o.buildQueryExpansionString("messi"));
+        System.out.println(o.buildQueryExpansionString("william"));
     }
 }
 
