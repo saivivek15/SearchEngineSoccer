@@ -47,10 +47,10 @@
 				<li><a data-toggle="tab" href="#googleSearch">Google Search</a></li>
 				<li><a data-toggle="tab" href="#bingSearch">Bing Search</a></li>
 				<li><a data-toggle="tab" href="#flatCluster">Flat Cluster</a></li>
-				<li><a data-toggle="tab" href="#singleLinkageCluster">Single Linkage Clustering</a></li>
-				<li><a data-toggle="tab" href="#avgLinkageCluster">Average Linkage Clustering</a></li>
-				<li><a data-toggle="tab" href="#weightedLinkageCluster">Weighted Linkage Clustering</a></li>
-				<li><a data-toggle="tab" href="#completeLinkageCluster">Complete Linkage Clustering</a></li>
+				<li><a data-toggle="tab" href="#singleLinkageCluster">Single Link.</a></li>
+				<li><a data-toggle="tab" href="#avgLinkageCluster">Avg Link.</a></li>
+				<li><a data-toggle="tab" href="#weightedLinkageCluster">Weighted Link.</a></li>
+				<li><a data-toggle="tab" href="#completeLinkageCluster">Complete Link.</a></li>
 				<li><a data-toggle="tab" href="#qeSearch">Query Expansion</a></li>
 			</ul>
 		</div>
@@ -127,7 +127,7 @@
 				</c:choose>
 				<br>
 			</div>
-			<div id="#singleLinkageCluster" class="tab-pane fade in active">
+			<div id="singleLinkageCluster" class="tab-pane fade in active">
 				<c:choose>
 					<c:when test="${singleClusterDE.size()!=0}">
 						<c:forEach items="${singleClusterDE}" var="doc"
@@ -153,7 +153,7 @@
 				</c:choose>
 				<br>
 			</div>
-			<div id="#avgLinkageCluster" class="tab-pane fade in active">
+			<div id="avgLinkageCluster" class="tab-pane fade in active">
 				<c:choose>
 					<c:when test="${avgClusterDE.size()!=0}">
 						<c:forEach items="${avgClusterDE}" var="doc"
@@ -179,7 +179,7 @@
 				</c:choose>
 				<br>
 			</div>
-			<div id="#weightedLinkageCluster" class="tab-pane fade in active">
+			<div id="weightedLinkageCluster" class="tab-pane fade in active">
 				<c:choose>
 					<c:when test="${weightedClusterDE.size()!=0}">
 						<c:forEach items="${weightedClusterDE}" var="doc"
@@ -205,7 +205,7 @@
 				</c:choose>
 				<br>
 			</div>
-			<div id="#completeLinkageCluster" class="tab-pane fade in active">
+			<div id="completeLinkageCluster" class="tab-pane fade in active">
 				<c:choose>
 					<c:when test="${completeClusterDE.size()!=0}">
 						<c:forEach items="${completeClusterDE}" var="doc"
@@ -255,16 +255,16 @@
 				</c:choose>
 				<br>
 			</div>
-		<div id="qeSearch" class="tab-pane fade in active">
-	
+			<div id="qeSearch" class="tab-pane fade in active">
+
 				<c:choose>
 					<c:when test="${expandDE.size()!=0}">
-					<h4> ${expandQuery}</h4>
+						<h4>${expandQuery}</h4>
 						<c:forEach items="${expandDE}" var="doc" varStatus="recordIndex">
 							<span class="titleres"> <strong><a
-									href='<c:out value="${doc.url}"/>'>
-									</a></strong>
-							</span><br />
+									href='<c:out value="${doc.url}"/>'> </a></strong>
+							</span>
+							<br />
 							<a href='<c:out value="${doc.url}"/>'><c:out
 									value="${doc.url}" /></a>
 							<br>
@@ -279,9 +279,9 @@
 				</c:choose>
 				<br>
 			</div>
-			
-			
-			
+
+
+
 
 		</div>
 	</div>
