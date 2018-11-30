@@ -42,21 +42,26 @@
 		</div>
 		<div class="lSearch">
 			<ul class="nav nav-tabs">
-				<li class="active"><a data-toggle="tab" href="#hitSearch">Hits Search</a></li>
+				<li class="active"><a data-toggle="tab" href="#hitSearch">Hits
+						Search</a></li>
 				<li><a data-toggle="tab" href="#googleSearch">Google Search</a></li>
 				<li><a data-toggle="tab" href="#bingSearch">Bing Search</a></li>
 				<li><a data-toggle="tab" href="#flatCluster">Flat Cluster</a></li>
-				<li><a data-toggle="tab" href="#singleLinkageCluster">Single Linkage Clustering</a></li>
-				<li><a data-toggle="tab" href="#avgLinkageCluster">Average Linkage Clustering</a></li>
-				<li><a data-toggle="tab" href="#weightedLinkageCluster">Weighted Linkage Clustering</a></li>
-				<li><a data-toggle="tab" href="#completeLinkageCluster">Complete Linkage Clustering</a></li>
-				<li><a data-toggle="tab" href="#completeLinkageCluster">Query Expansion</a></li> 
+				<li><a data-toggle="tab" href="#singleLinkageCluster">Single
+						Linkage Clustering</a></li>
+				<li><a data-toggle="tab" href="#avgLinkageCluster">Average
+						Linkage Clustering</a></li>
+				<li><a data-toggle="tab" href="#weightedLinkageCluster">Weighted
+						Linkage Clustering</a></li>
+				<li><a data-toggle="tab" href="#completeLinkageCluster">Complete
+						Linkage Clustering</a></li>
+				<li><a data-toggle="tab" href="#completeLinkageCluster">Query
+						Expansion</a></li>
 			</ul>
 		</div>
 		<div class="tab-content searchRes"
 			style="position: fixed; width: 90%; height: 90%; margin-top: 40px; overflow-y: scroll; text-align: left;">
 			<div id="hitSearch" class="tab-pane fade in active">
-
 				<c:choose>
 					<c:when test="${DocEntities.size()!=0}">
 						<c:forEach items="${DocEntities}" var="doc"
@@ -80,7 +85,6 @@
 				<br>
 			</div>
 			<div id="googleSearch" class="tab-pane fade in active">
-
 				<c:choose>
 					<c:when test="${googleDE.size()!=0}">
 						<c:forEach items="${googleDE}" var="doc" varStatus="recordIndex">
@@ -104,8 +108,8 @@
 			</div>
 			<div id="flatCluster" class="tab-pane fade in active">
 				<c:choose>
-					<c:when test="${DocEntities.size()!=0}">
-						<c:forEach items="${DocEntities}" var="doc"
+					<c:when test="${flatClusterDE.size()!=0}">
+						<c:forEach items="${flatClusterDE}" var="doc"
 							varStatus="recordIndex">
 							<span class="titleres"> <strong><a
 									href='<c:out value="${doc.url}"/>'> </a></strong>
@@ -115,6 +119,9 @@
 									value="${doc.url}" /></a>
 							<br>
 										${doc.contents}
+										<br />
+							<br>
+										${doc.clusterId}
 										<br />
 							<br />
 						</c:forEach>
