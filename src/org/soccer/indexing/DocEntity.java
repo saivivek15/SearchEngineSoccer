@@ -2,6 +2,7 @@ package org.soccer.indexing;
 
 public class DocEntity {
 	
+	
 	private String contents;
 	private String url;
 	private String filename;

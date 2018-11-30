@@ -1,6 +1,5 @@
 package org.soccer.indexing;
 
-
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
@@ -17,9 +16,10 @@ import org.apache.lucene.index.IndexWriter;
 import org.apache.lucene.index.IndexWriterConfig;
 import org.apache.lucene.store.FSDirectory;
 import org.apache.lucene.util.Version;
-
 import org.soccer.clustering.FlatClustering;
 import org.soccer.clustering.HeirarClustering;
+import org.soccer.indexing.DocEntity;
+import org.soccer.indexing.QueryExecution;
 
 /**
  * @author Michael Mugo

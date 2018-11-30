@@ -22,7 +22,7 @@ public class queryProcessor {
 
     public void getStopWords() throws IOException {
         String current = new java.io.File( "." ).getCanonicalPath();
-        String StopWordFile = current+"/stopwords";
+        String StopWordFile = current+ "/webapps/SearchEngineSoccer-0.0.1-SNAPSHOT/WEB-INF/resources/stopwords";
         try (BufferedReader br = new BufferedReader(new FileReader(StopWordFile))) {
             for (String line; (line = br.readLine()) != null; ) {
                 StopWords.add(line.trim());

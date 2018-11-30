@@ -1,11 +1,19 @@
 package org.soccer.queryExpansion;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.PriorityQueue;
+import java.util.Set;
+
 import org.soccer.indexing.DocEntity;
 import org.soccer.indexing.QueryExecution;
-
-import javax.xml.bind.Element;
-import java.io.IOException;
-import java.util.*;
 
 public class queryExpansion {
 
@@ -30,7 +38,7 @@ public class queryExpansion {
 
     }
 
-    public static String buildQueryExpansionString(String query) throws Exception {
+    public String buildQueryExpansionString(String query) throws Exception {
 
         wordObj[][] matrix = pseudoRelevanceFeedBackProcessor(query);
 

@@ -17,7 +17,7 @@ public class stemHelper {
         this.stemMap = new HashMap<>();
 
         String current = new java.io.File( "." ).getCanonicalPath();
-        String wordNet = current+"/dict";
+        String wordNet = current+"/webapps/SearchEngineSoccer-0.0.1-SNAPSHOT/WEB-INF/resources/dict";
         final Dictionary dict = new Dictionary(new File(wordNet));
         dict.open();
         this.stemmer = new WordnetStemmer(dict);
