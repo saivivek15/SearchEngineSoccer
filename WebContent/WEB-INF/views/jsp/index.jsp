@@ -50,7 +50,7 @@
 				<li><a data-toggle="tab" href="#avgLinkageCluster">Average Linkage Clustering</a></li>
 				<li><a data-toggle="tab" href="#weightedLinkageCluster">Weighted Linkage Clustering</a></li>
 				<li><a data-toggle="tab" href="#completeLinkageCluster">Complete Linkage Clustering</a></li>
-				<li><a data-toggle="tab" href="#completeLinkageCluster">Query Expansion</a></li> =======
+				<li><a data-toggle="tab" href="#completeLinkageCluster">Query Expansion</a></li> 
 			</ul>
 		</div>
 		<div class="tab-content searchRes"
