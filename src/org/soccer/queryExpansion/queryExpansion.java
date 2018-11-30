@@ -1,11 +1,19 @@
 package org.soccer.queryExpansion;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.PriorityQueue;
+import java.util.Set;
+
 import org.soccer.indexing.DocEntity;
 import org.soccer.indexing.QueryExecution;
-
-import javax.xml.bind.Element;
-import java.io.IOException;
-import java.util.*;
 
 public class queryExpansion {
 
@@ -30,7 +38,7 @@ public class queryExpansion {
 
     }
 
-    public static String buildQueryExpansionString(String query) throws Exception {
+    public String buildQueryExpansionString(String query) throws Exception {
 
         wordObj[][] matrix = pseudoRelevanceFeedBackProcessor(query);
 
@@ -61,11 +69,7 @@ public class queryExpansion {
 
     public static wordObj[][] pseudoRelevanceFeedBackProcessor(String query) throws Exception {
 
-        /*
-
-        QUERY INDEX FROM THE GIVEN QUERY TO GET RESULTS
-
-         */
+        //QUERY INDEX FROM THE GIVEN QUERY TO GET RESULTS
         ArrayList<DocEntity> res = QueryExecution.processQuery(query);
 
         String[] docs = new String[10];
@@ -154,9 +158,9 @@ public class queryExpansion {
         wordObj[][] elements = new wordObj[strs.size()][3];
 
         int idx = 0;
+        PriorityQueue<wordObj> queue;
         for(String word: strs) {
-            final PriorityQueue<wordObj> queue = new PriorityQueue<>(3, new Comparator<wordObj>() {
-
+             queue = new PriorityQueue<>(3, new Comparator<wordObj>() {
                 @Override
                 public int compare(final wordObj o1, final wordObj o2) {
                     return o1.val >= o2.val ? 1 : -1;
@@ -185,7 +189,7 @@ public class queryExpansion {
                     queue.add(new wordObj(metricMatrix[i][j].u, stemMap.get(metricMatrix[i][j].v).iterator().next(), metricMatrix[i][j].val));
                 }
 
-                if (queue.size() > 3){
+                if (queue.size() >= 4){
                     queue.poll();
                 }
             }
@@ -201,7 +205,7 @@ public class queryExpansion {
 
         queryExpansion o = new queryExpansion();
 
-        System.out.println(o.buildQueryExpansionString("messi"));
+        System.out.println(o.buildQueryExpansionString("william"));
     }
 }
 

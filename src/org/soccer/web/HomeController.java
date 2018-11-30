@@ -10,6 +10,7 @@ import org.soccer.service.BingService;
 import org.soccer.service.ClusteringService;
 import org.soccer.service.GoogleService;
 import org.soccer.service.HomeService;
+import org.soccer.service.QueryExpansionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
@@ -26,13 +27,15 @@ public class HomeController {
 	private GoogleService googleService;
 	private BingService bingService;
 	private ClusteringService clusteringService;
+	private QueryExpansionService queryExpansionService;
 	
 	@Autowired
-	public HomeController(HomeService homeService, GoogleService googleService, BingService bingService, ClusteringService cs) {
+	public HomeController(HomeService homeService, GoogleService googleService, BingService bingService, ClusteringService cs, QueryExpansionService queryExpansionService) {
 		this.homeService = homeService;
 		this.googleService = googleService;
 		this.bingService = bingService;
 		this.clusteringService = cs;
+		this.queryExpansionService = queryExpansionService;
 	}
 
 	@RequestMapping(value = "/", method = RequestMethod.GET)
@@ -51,13 +54,17 @@ public class HomeController {
 		ArrayList<DocEntity> googleDE = googleService.getGoogleAPIResults(query);
 		ArrayList<DocEntity> bingDE = bingService.getBingAPIResults(query);
 		ArrayList<DocEntity> flatClusterDE = clusteringService.getFlatClusterResult(de);
-		
+		String expandQuery = queryExpansionService.getExpandedQuery(query);
+		ArrayList<DocEntity> expandDE = homeService.getDocEntites(expandQuery);
+		String eq = new String("Expanded Query: " + expandQuery);
 		
 		model.addAttribute("query", query);
 		model.addAttribute("DocEntities", de);
 		model.addAttribute("googleDE",googleDE);
 		model.addAttribute("bingDE",bingDE);
 		model.addAttribute("flatClusterDE",flatClusterDE);
+		model.addAttribute("expandQuery",eq);
+		model.addAttribute("expandDE", expandDE);
 		
 		logger.debug("search executed!");
 		
