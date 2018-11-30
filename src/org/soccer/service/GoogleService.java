@@ -20,10 +20,10 @@ public class GoogleService {
 	public ArrayList<DocEntity> getGoogleAPIResults(String searchText) throws IOException, JSONException {
 		ArrayList<DocEntity> googleDE = new ArrayList<>();
 		
-		String key = "AIzaSyBUbUJ7OBU6ZacbheM7r3tx2IsEkGB2etU";
-		String cref = "017576662512468239146:omuauf_lfve"; //
+		String key = "AIzaSyD138V19Q2043f37KsjJoxZtmDVMhBUQ3E";
+		String cx = "003337752057909681064:9yt6jiiy32s"; //
 		
-		URL url = new URL("https://www.googleapis.com/customsearch/v1?key="+ key + "&cx=" + cref + "&q="+ URLEncoder.encode(searchText, "UTF-8") + "&alt=json");
+		URL url = new URL("https://www.googleapis.com/customsearch/v1?key="+ key + "&cx=" + cx + "&q="+ URLEncoder.encode(searchText, "UTF-8") + "&alt=json");
 		HttpURLConnection connection = (HttpURLConnection) url.openConnection();
 		connection.setRequestMethod("GET");
 		connection.setRequestProperty("Accept", "application/json");
