@@ -42,27 +42,15 @@
 		</div>
 		<div class="lSearch">
 			<ul class="nav nav-tabs">
-				<li class="active"><a data-toggle="tab" href="#hitSearch">Hits
-						Search</a></li>
+				<li class="active"><a data-toggle="tab" href="#hitSearch">Hits Search</a></li>
 				<li><a data-toggle="tab" href="#googleSearch">Google Search</a></li>
-				<<<<<<< HEAD
-				<li><a data-toggle="tab" href="#flatCluster">Flat Cluster</a></li>
-				<li><a data-toggle="tab" href="#singleLinkageCluster">Single
-						Linkage Clustering</a></li>
-				<li><a data-toggle="tab" href="#avgLinkageCluster">Average
-						Linkage Clustering</a></li>
-				<li><a data-toggle="tab" href="#weightedLinkageCluster">Weighted
-						Linkage Clustering</a></li>
-				<li><a data-toggle="tab" href="#completeLinkageCluster">Complete
-						Linkage Clustering</a></li>
-				<li><a data-toggle="tab" href="#completeLinkageCluster">Query
-						Expansion</a></li> =======
 				<li><a data-toggle="tab" href="#bingSearch">Bing Search</a></li>
-				<li><a data-toggle="tab" href="#flatCluster">K-Means</a></li>
-				<li><a data-toggle="tab" href="#singleCluster">Agglomerative</a></li>
-				<li><a data-toggle="tab" href="#avgCluster">Query Expansion</a></li>
-				>>>>>>> 816ec875b7d106a77c1a2d188fbbf5da4c3d80af
-
+				<li><a data-toggle="tab" href="#flatCluster">Flat Cluster</a></li>
+				<li><a data-toggle="tab" href="#singleLinkageCluster">Single Linkage Clustering</a></li>
+				<li><a data-toggle="tab" href="#avgLinkageCluster">Average Linkage Clustering</a></li>
+				<li><a data-toggle="tab" href="#weightedLinkageCluster">Weighted Linkage Clustering</a></li>
+				<li><a data-toggle="tab" href="#completeLinkageCluster">Complete Linkage Clustering</a></li>
+				<li><a data-toggle="tab" href="#completeLinkageCluster">Query Expansion</a></li> =======
 			</ul>
 		</div>
 		<div class="tab-content searchRes"
