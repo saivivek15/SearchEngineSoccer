@@ -40,6 +40,7 @@
 			<ul class="nav nav-tabs">
 				<li class="active"><a data-toggle="tab" href="#hitSearch">Hits Search</a></li>
 				<li><a data-toggle="tab" href="#googleSearch">Google Search</a></li>
+				<li><a data-toggle="tab" href="#bingSearch">Bing Search</a></li>
 				<li><a data-toggle="tab" href="#flatCluster">K-Means</a></li>
 				<li><a data-toggle="tab" href="#singleCluster">Agglomerative</a></li>
 				<li><a data-toggle="tab" href="#avgCluster">Query Expansion</a></li>
@@ -93,6 +94,32 @@
 				</c:choose>
 				<br>
 			</div>
+		<div id="bingSearch" class="tab-pane fade in active">
+	
+				<c:choose>
+					<c:when test="${bingDE.size()!=0}">
+						<c:forEach items="${bingDE}" var="doc" varStatus="recordIndex">
+							<span class="titleres"> <strong><a
+									href='<c:out value="${doc.url}"/>'>
+									</a></strong>
+							</span><br />
+							<a href='<c:out value="${doc.url}"/>'><c:out
+									value="${doc.url}" /></a>
+							<br>
+										${doc.contents}
+										<br />
+							<br />
+						</c:forEach>
+					</c:when>
+					<c:otherwise>
+						<p>No Result</p>
+					</c:otherwise>
+				</c:choose>
+				<br>
+			</div>
+			
+			
+			
 		</div>
 	</div>
 	

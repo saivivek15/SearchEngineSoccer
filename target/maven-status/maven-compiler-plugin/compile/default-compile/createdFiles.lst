@@ -1,3 +1,4 @@
+org/soccer/service/SearchResults.class
 org/soccer/queryExpansion/stemHelper.class
 org/soccer/queryExpansion/queryExpansion$2.class
 org/soccer/indexing/IndexCreator.class
@@ -13,3 +14,4 @@ org/soccer/queryExpansion/queryProcessor.class
 org/soccer/crawling/Crawler.class
 org/soccer/crawling/Controller.class
 org/soccer/queryExpansion/queryExpansion$wordObj.class
+org/soccer/service/BingService.class
