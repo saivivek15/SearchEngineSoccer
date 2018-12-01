@@ -37,14 +37,20 @@ public class GoogleService {
 		if (response != null) {
 
 			JSONObject obj = new JSONObject(response.toString());
-			JSONArray items = obj.getJSONArray("items");
-			
-			for (int i = 0; i < items.length(); i++) {
-				DocEntity d = new DocEntity();
-				d.setUrl(items.getJSONObject(i).getString("link"));
-				d.setContents(items.getJSONObject(i).getString("snippet"));
-				googleDE.add(d);
+			try{
+				JSONArray items = obj.getJSONArray("items");
+				for (int i = 0; i < items.length(); i++) {
+					DocEntity d = new DocEntity();
+					d.setUrl(items.getJSONObject(i).getString("link"));
+					d.setContents(items.getJSONObject(i).getString("snippet"));
+					googleDE.add(d);
+				}
 			}
+			catch(Exception e){
+				
+				 System.out.println(e.getMessage());
+			}
+
 		}
 		return googleDE;
 	}

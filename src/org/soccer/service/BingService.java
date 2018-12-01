@@ -49,17 +49,18 @@ public class BingService {
 	    
 		// Confirm the subscriptionKey is valid.
 		ArrayList<DocEntity> results = new ArrayList<>();
-	    if (subscriptionKey.length() != 32) {
-	        System.out.println("Invalid Bing Search API subscription key!");
-	        System.out.println("Please paste yours into the source code.");
-	        System.exit(1);
-	    }
 
 
 	    try {
+		    if (subscriptionKey.length() != 32) {
+		        System.out.println("Invalid Bing Search API subscription key!");
+		        System.out.println("Please paste yours into the source code.");
+		    }
 	        SearchResults result = SearchWeb(query);
 		    JsonParser parser = new JsonParser();
 		    JsonObject json = parser.parse(result.jsonResponse).getAsJsonObject();
+		    if(!json.has("webPages"))
+		    	return results;
 		    JsonArray pages = json.get("webPages").getAsJsonObject().get("value").getAsJsonArray();
 		    for(int i=0;i<pages.size();i++){
 		    	DocEntity d = new DocEntity();
@@ -71,7 +72,6 @@ public class BingService {
 	    }
 	    catch (Exception e) {
 	        e.printStackTrace(System.out);
-	        System.exit(1);
 	    }
 	    
 	   return results;
