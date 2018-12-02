@@ -8,8 +8,6 @@ import java.util.HashSet;
 import java.util.TreeMap;
 import java.util.TreeSet;
 
-import org.soccer.indexing.DocEntity;
-
 public class KMeansClustering {
 	
 	public ArrayList<String> fileNames = new ArrayList<>();
@@ -20,7 +18,9 @@ public class KMeansClustering {
 	public ArrayList<ArrayList<Double>> docVectors = new ArrayList<>();
 	
 	public HashMap<String, Integer> performKMeansClustering(HashMap<String, String> inputMap) {
+		
 		fileNames.addAll(inputMap.keySet());
+		System.out.println("No of files: "+fileNames.size());
 		for(String fileName:fileNames) {
 		String[] tokens = inputMap.get(fileName).split(" ");
 		ArrayList<String> finalTokens = new ArrayList<String>(Arrays.asList(tokens));
