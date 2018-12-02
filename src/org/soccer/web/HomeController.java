@@ -3,8 +3,8 @@ package org.soccer.web;
 import java.util.ArrayList;
 import java.util.Map;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.log4j.Level;
+import org.apache.log4j.Logger;
 import org.soccer.indexing.DocEntity;
 import org.soccer.service.BingService;
 import org.soccer.service.ClusteringService;
@@ -22,7 +22,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 @Controller
 public class HomeController {
 
-	private Logger logger = LoggerFactory.getLogger(HomeController.class);
+	final static Logger logger = Logger.getLogger(HomeController.class);
 	private HomeService homeService;
 	private GoogleService googleService;
 	private BingService bingService;
@@ -73,6 +73,7 @@ public class HomeController {
 		}
 
 		String expandQuery = queryExpansionService.getExpandedQuery(query);
+
 		ArrayList<DocEntity> expandDE = homeService.getDocEntites(expandQuery);
 		String eq = new String("Expanded Query: " + expandQuery);
 		

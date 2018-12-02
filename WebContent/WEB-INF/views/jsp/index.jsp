@@ -61,6 +61,9 @@
 					<c:when test="${DocEntities.size()!=0}">
 						<c:forEach items="${DocEntities}" var="doc"
 							varStatus="recordIndex">
+							<span class="titleres"> <strong><a href='<c:out value="${doc.url}"/>'>
+								${doc.title} </a></strong>
+							</span>
 							<span class="titleres"> <strong><a
 									href='<c:out value="${doc.url}"/>'> </a></strong>
 							</span>
@@ -83,6 +86,9 @@
 				<c:choose>
 					<c:when test="${googleDE.size()!=0}">
 						<c:forEach items="${googleDE}" var="doc" varStatus="recordIndex">
+							<span class="titleres"> <strong><a href='<c:out value="${doc.url}"/>'>
+								${doc.title} </a></strong>
+							</span>
 							<span class="titleres"> <strong><a
 									href='<c:out value="${doc.url}"/>'> </a></strong>
 							</span>
@@ -106,6 +112,9 @@
 					<c:when test="${flatClusterDE.size()!=0}">
 						<c:forEach items="${flatClusterDE}" var="doc"
 							varStatus="recordIndex">
+							<span class="titleres"> <strong><a href='<c:out value="${doc.url}"/>'>
+								${doc.title} </a></strong>
+							</span>
 							<span class="titleres"> <strong><a
 									href='<c:out value="${doc.url}"/>'> </a></strong>
 							</span>
@@ -132,6 +141,9 @@
 					<c:when test="${singleClusterDE.size()!=0}">
 						<c:forEach items="${singleClusterDE}" var="doc"
 							varStatus="recordIndex">
+							<span class="titleres"> <strong><a href='<c:out value="${doc.url}"/>'>
+								${doc.title} </a></strong>
+							</span>
 							<span class="titleres"> <strong><a
 									href='<c:out value="${doc.url}"/>'> </a></strong>
 							</span>
@@ -158,6 +170,9 @@
 					<c:when test="${avgClusterDE.size()!=0}">
 						<c:forEach items="${avgClusterDE}" var="doc"
 							varStatus="recordIndex">
+							<span class="titleres"> <strong><a href='<c:out value="${doc.url}"/>'>
+								${doc.title} </a></strong>
+							</span>
 							<span class="titleres"> <strong><a
 									href='<c:out value="${doc.url}"/>'> </a></strong>
 							</span>
@@ -184,6 +199,9 @@
 					<c:when test="${weightedClusterDE.size()!=0}">
 						<c:forEach items="${weightedClusterDE}" var="doc"
 							varStatus="recordIndex">
+							<span class="titleres"> <strong><a href='<c:out value="${doc.url}"/>'>
+								${doc.title} </a></strong>
+							</span>
 							<span class="titleres"> <strong><a
 									href='<c:out value="${doc.url}"/>'> </a></strong>
 							</span>
@@ -210,6 +228,9 @@
 					<c:when test="${completeClusterDE.size()!=0}">
 						<c:forEach items="${completeClusterDE}" var="doc"
 							varStatus="recordIndex">
+						<span class="titleres"> <strong><a href='<c:out value="${doc.url}"/>'>
+								${doc.title} </a></strong>
+							</span>
 							<span class="titleres"> <strong><a
 									href='<c:out value="${doc.url}"/>'> </a></strong>
 							</span>
@@ -237,6 +258,9 @@
 				<c:choose>
 					<c:when test="${bingDE.size()!=0}">
 						<c:forEach items="${bingDE}" var="doc" varStatus="recordIndex">
+						<span class="titleres"> <strong><a href='<c:out value="${doc.url}"/>'>
+								${doc.title} </a></strong>
+							</span>
 							<span class="titleres"> <strong><a
 									href='<c:out value="${doc.url}"/>'> </a></strong>
 							</span>
