@@ -2,7 +2,6 @@ package org.soccer.clustering;
 
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -22,8 +21,7 @@ import com.apporiented.algorithm.clustering.ClusteringAlgorithm;
 import com.apporiented.algorithm.clustering.CompleteLinkageStrategy;
 import com.apporiented.algorithm.clustering.PDistClusteringAlgorithm;
 import com.apporiented.algorithm.clustering.SingleLinkageStrategy;
-import com.apporiented.algorithm.clustering.WeightedLinkageStrategy;
-import com.apporiented.algorithm.clustering.visualization.DendrogramPanel;;
+import com.apporiented.algorithm.clustering.WeightedLinkageStrategy;;
 
 
 /**
@@ -38,17 +36,15 @@ public class HeirarClustering {
 	public static ArrayList<ArrayList<String>> docWordsList = new ArrayList<ArrayList<String>>();
 	public static ArrayList<String> totalWordsInAllDocs = new ArrayList<String>();
 	public static HashSet<String> totalWordsSet = new HashSet<String>();
+	public static ArrayList<DocEntity> docEntityList = new ArrayList<>();
 
-	public static void main(String[] args) throws FileNotFoundException {
-		getAllExamCluster("/Users/sobellan/Desktop/searchEngine/data1");
+	public static void main(String[] args) throws IOException {
+		performClusteringOnRawData();
 	}
 
-	public static void getAllExamCluster(String ipDocs) throws FileNotFoundException {
-		File[] files = new File(ipDocs).listFiles();
-		ArrayList<String> global = new ArrayList<String>();
-		ArrayList<String[]> docs = new ArrayList<String[]>();
+	public static void performClusteringOnRawData() throws IOException {
 		Set<String> stopwordsSet = new HashSet<String>();
-		ArrayList<String> fileNames = new ArrayList<String>();
+		HashMap<String, String> fileUrlMap = new HashMap<String, String>();
 
 		Scanner stopwordsFile = new Scanner(new File("/Users/sobellan/Desktop/searchEngine/stopwords.txt"));
 		while (stopwordsFile.hasNext())
@@ -56,81 +52,62 @@ public class HeirarClustering {
 		stopwordsFile.close();
 
 		BufferedReader in;
-		File folder = new File("/Users/sobellan/Desktop/searchEngine/data1");
 
-		for (File file : folder.listFiles()) {
-			ArrayList<String> docWords = new ArrayList<String>();
+		File contentFolder = new File("/Users/sobellan/Downloads/data1");
+		File urlFilePath = new File("/Users/sobellan/Downloads/urls1.txt");
+
+		BufferedReader urlReader = new BufferedReader(new FileReader(urlFilePath));
+		String urlLine = null;
+		while ((urlLine = urlReader.readLine()) != null) {
+			String[] tmpFields = urlLine.split(" ");
+			if (!fileUrlMap.containsKey(tmpFields[0])){
+				fileUrlMap.put(tmpFields[0], tmpFields[1]);
+			}
+		}
+		urlReader.close();
+
+		for (File file : contentFolder.listFiles()) {
+			DocEntity currentObj = new DocEntity();
 			if (file.isHidden()){
 				continue;
 			}
-			fileNames.add(file.getName());
 			in = new BufferedReader(new FileReader(file));
 			String line = null;
-			try { 
-				StringBuilder sb = new StringBuilder();
-				while ((line = in.readLine()) != null) {
-					sb.append(line + " ");
-				}
-				String lineString = sb.toString();
-				String processedFile = processText(lineString);
-				String delimiter = " ";
-				String[] tokens = processedFile.split(delimiter);
-				docWords = removeStopWords(tokens, stopwordsSet);
-				totalWordsSet.addAll(docWords);
-			} catch (IOException e) {
-				e.printStackTrace();
+			String content = "";
+
+			while ((line = in.readLine()) != null) {
+				content += line;
 			}
-			docWordsList.add(docWords);
-			//			System.out.println("File: " + file);
-			//			System.out.println("words: " + docWords);
-			System.out.println("File: " + file.getName());
-		}
-
-		totalWordsInAllDocs.addAll(totalWordsSet);
-		System.out.println(totalWordsInAllDocs.size());
-		int abc =0;
-		ArrayList<double[]> docVectors = new ArrayList<double[]>();
-		for (ArrayList<String> documentWord : docWordsList) {
-			System.out.println(abc++);
-			double[] docVector = new double[totalWordsInAllDocs.size()];
-			for (int i = 0; i < totalWordsInAllDocs.size(); i++)
-				docVector[i] = tf(documentWord, totalWordsInAllDocs.get(i)) * idf(i);
-			//			System.out.println("doc vector values");
-			//			for (double d : docVector) {
-			//				System.out.print(d + " ");
-			//			}
-			//			System.out.println("\n");
-			docVectors.add(docVector);
-		}
-		System.out.println("finished doc vector");
-		System.out.println("doc vectors size: " + docVectors.size());
-		ArrayList<Double> cosineSimilarities = new ArrayList<Double>();
-		for (int i = 0; i < docVectors.size(); i++) {
-			for (int j = i + 1; j < docVectors.size(); j++) {
-				double[] first = docVectors.get(i);
-				double[] second = docVectors.get(j);
-				cosineSimilarities.add(cosineSim(first, second));
+			currentObj.setFilename(file.getName());
+			currentObj.setContents(content);
+			String url = fileUrlMap.get(file.getName().split("\\.")[0]);
+			
+			if (url != null) {
+				currentObj.setUrl(url);
+				docEntityList.add(currentObj);
 			}
+
 		}
+		System.out.println("Doc Entity List Size: " + docEntityList.size());
+		System.out.println("\nclustering started\n");
+		ArrayList<DocEntity> flatClusteredResult = FlatClustering.getFlatCluster(docEntityList);
+//		ArrayList<DocEntity> avgClusteredResult = HeirarClustering.getAverageLinkageCluster(docEntityList);
 
-		System.out.println("Cosine similarities size: " + cosineSimilarities.size());
+//		System.out.println("\nFlat clustered result size: " + flatClusteredResult.size());
+//		for (DocEntity dr:flatClusteredResult) {
+//			System.out.println("File name: " + dr.getFilename());
+//			System.out.println("Url: " + dr.getUrl());
+//			System.out.println("Cluster name: " + dr.getClusterId());
+//		}
 
-		pdist = new double[1][cosineSimilarities.size()];
-		for (int i = 0; i < cosineSimilarities.size(); i++) {
-			pdist[0][i] = cosineSimilarities.get(i);
-			//			System.out.println(pdist[0][i]);
-		}
-
-		System.out.println("pdist size: " + pdist[0].length);
-		String[] names = fileNames.toArray(new String[0]);
-		System.out.println("filenames size: "+names.length);
-		ClusteringAlgorithm alg = new PDistClusteringAlgorithm();
-		Cluster cluster = alg.performClustering(pdist, names, new AverageLinkageStrategy());
-
-		cluster.toConsole(0);
-		//		System.out.println(cluster.getTotalDistance());
-		DendrogramPanel dp = new DendrogramPanel();
-		dp.setModel(cluster);
+//		System.out.println("*******************************");
+//		System.out.println("Average Linkage");
+//		System.out.println("Avg clustered result size: " + avgClusteredResult.size());
+//		for (DocEntity dr:avgClusteredResult) {
+//			System.out.println("File name: " + dr.getFilename());
+//			System.out.println("Url: " + dr.getUrl());
+//			System.out.println("Cluster name: " + dr.getClusterId());
+//		}
 
 	}
 

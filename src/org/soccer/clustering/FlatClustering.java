@@ -17,17 +17,17 @@ public class FlatClustering {
 
 	public static ArrayList<DocEntity> getFlatCluster(ArrayList<DocEntity> inputResults) {
 		ArrayList<DocEntity> clusterResult = new ArrayList<>();
-		ArrayList<String[]> docs = new ArrayList<String[]>();
+		ArrayList<ArrayList<String>> docs = new ArrayList<>();
 		ArrayList<String> filenames = new ArrayList<String>();
 		ArrayList<String> global = new ArrayList<String>();
 		HashMap<String, Integer> inputMap = new HashMap<>();
-		HashMap<String,Float> rankMap = new HashMap<>();
-		for (int i = 0; i < inputResults.size() && i < 30; i++) {
+	//	HashMap<String,Float> rankMap = new HashMap<>();
+		for (int i = 0; i < inputResults.size(); i++) {
 			StringBuffer sb = new StringBuffer();
 			DocEntity document = new DocEntity();
 			document = inputResults.get(i);
 			inputMap.put(document.getUrl(), i);
-			rankMap.put(document.getUrl(), document.getHitScore());
+		//	rankMap.put(document.getUrl(), document.getHitScore());
 			sb.append(document.getContents());
 			// input cleaning regex
 			String[] d = sb.toString().toLowerCase().replaceAll("[\\W&&[^\\s]]", "").replaceAll("[^a-zA-Z\\s]", "")
@@ -35,112 +35,137 @@ public class FlatClustering {
 			for (String u : d)
 				if (!global.contains(u))
 					global.add(u);
-			docs.add(d);
-			filenames.add(document.getUrl());
+			
+			docs.add(new ArrayList<String>(Arrays.asList(d)));
+			
+			if (document.getUrl() != null) {
+				filenames.add(document.getUrl());
+			}
 		}
 
-		ArrayList<double[]> vecspace = new ArrayList<double[]>();
-		for (String[] s : docs) {
-			double[] d = new double[global.size()];
-			for (int i = 0; i < global.size(); i++)
-				d[i] = tf(s, global.get(i)) * idf(docs, global.get(i));
-			vecspace.add(d);
+		ArrayList<ArrayList<Double>> vecspace = new ArrayList<ArrayList<Double>>();
+		for (ArrayList<String> doc : docs) {
+			ArrayList<Double> docVector = new ArrayList<Double>();
+			for (String token:global)
+				docVector.add(tf(doc, token) * idf(docs, token));
+			vecspace.add(docVector);
 		}
 
 		// iterate k-means
-		HashMap<double[], TreeSet<Integer>> clusters = new HashMap<double[], TreeSet<Integer>>();
-		HashMap<double[], TreeSet<Integer>> step = new HashMap<double[], TreeSet<Integer>>();
-		HashSet<Integer> rand = new HashSet<Integer>();
-		TreeMap<Double, HashMap<double[], TreeSet<Integer>>> errorsums = new TreeMap<Double, HashMap<double[], TreeSet<Integer>>>();
+		HashMap<ArrayList<Double>, TreeSet<Integer>> clusters = new HashMap<ArrayList<Double>, TreeSet<Integer>>();
+		HashMap<ArrayList<Double>, TreeSet<Integer>> tmpClusters = new HashMap<ArrayList<Double>, TreeSet<Integer>>();
+		HashSet<Integer> kcenters = new HashSet<Integer>();
+		TreeMap<Double, HashMap<ArrayList<Double>, TreeSet<Integer>>> errorSumMap = new TreeMap<Double, HashMap<ArrayList<Double>, TreeSet<Integer>>>();
 		int k = 4;
-		int maxiter = 20;
-		for (int init = 0; init < 2; init++) {
-			clusters.clear();
-			step.clear();
-			rand.clear();
+		int maxIterations = 10;
+		
+		for (int loopCnt = 0; loopCnt < 2; loopCnt++) {
+
 			// randomly initialize cluster centers
-			while (rand.size() < k)
-				rand.add((int) (Math.random() * vecspace.size()));
-			for (int r : rand) {
-				double[] temp = new double[vecspace.get(r).length];
-				System.arraycopy(vecspace.get(r), 0, temp, 0, temp.length);
-				step.put(temp, new TreeSet<Integer>());
+			while (kcenters.size() < k)
+				kcenters.add((int) (Math.random() * vecspace.size()));
+
+			for (int center : kcenters) {
+				tmpClusters.put(vecspace.get(center), new TreeSet<Integer>());
 			}
-			boolean go = true;
-			int iter = 0;
-			while (go) {
-				clusters = new HashMap<double[], TreeSet<Integer>>(step);
-				// cluster assignment step
+
+			int iteations = 0;
+			while (true) {
+				clusters = new HashMap<ArrayList<Double>, TreeSet<Integer>>(tmpClusters);
+
+				// assign clusters to the documents
 				for (int i = 0; i < vecspace.size(); i++) {
-					double[] cent = null;
-					double sim = 0;
-					for (double[] c : clusters.keySet()) {
-						double csim = cosSim(vecspace.get(i), c);
-						if (csim > sim) {
-							sim = csim;
-							cent = c;
+					ArrayList<Double> centroid = null;
+					double similarity = 0;
+					for (ArrayList<Double> vector : clusters.keySet()) {
+						double cosineSimilarity = computeCosineSimilarity(vecspace.get(i), vector);
+						if (cosineSimilarity >= similarity) {
+							similarity = cosineSimilarity;
+							centroid = vector;
 						}
 					}
-					if (cent != null)
-						clusters.get(cent).add(i);
+					if (centroid != null)
+						clusters.get(centroid).add(i);
 				}
-				// centroid update step
-				step.clear();
-				for (double[] cent : clusters.keySet()) {
-					double[] updatec = new double[cent.length];
-					for (int d : clusters.get(cent)) {
-						double[] doc = vecspace.get(d);
-						for (int i = 0; i < updatec.length; i++)
-							updatec[i] += doc[i];
+
+				// update clusters centroid
+				tmpClusters.clear();
+				
+				for (ArrayList<Double> centroid : clusters.keySet()) {
+					double[] newCentroid = new double[centroid.size()];
+					ArrayList<Double> tmp = new ArrayList<Double>();
+					for (int docId : clusters.get(centroid)) {
+						ArrayList<Double> docVector = vecspace.get(docId);
+						for (int i = 0; i < newCentroid.length; i++)
+							newCentroid[i] += docVector.get(i);
 					}
-					for (int i = 0; i < updatec.length; i++)
-						updatec[i] /= clusters.get(cent).size();
-					step.put(updatec, new TreeSet<Integer>());
+					for (int i = 0; i < newCentroid.length; i++)
+						newCentroid[i] /= clusters.get(centroid).size();
+					
+					for (double d:newCentroid)
+						tmp.add(d);
+					tmpClusters.put(tmp, new TreeSet<Integer>());
 				}
-				// check break conditions
-				String oldcent = "", newcent = "";
-				for (double[] x : clusters.keySet())
-					oldcent += Arrays.toString(x);
-				for (double[] x : step.keySet())
-					newcent += Arrays.toString(x);
-				if (oldcent.equals(newcent))
-					go = false;
-				if (++iter >= maxiter)
-					go = false;
-			}
+
+				// check end conditions and stop clustering
+				iteations++;
+				
+				ArrayList<Double> oldCentroidsList = new ArrayList<Double>();
+				ArrayList<Double> newCentroidsList = new ArrayList<Double>();
+				for (ArrayList<Double> x : clusters.keySet())
+					oldCentroidsList.addAll(x);
+
+				for (ArrayList<Double> x : tmpClusters.keySet())
+					newCentroidsList.addAll(x);
+
+				if (oldCentroidsList.equals(newCentroidsList))
+					break;
+
+				if (iteations > maxIterations)
+					break;
+			} // end of while
+
 			System.out.println(clusters.toString().replaceAll("\\[[\\w@]+=", ""));
-			if (iter < maxiter)
-				System.out.println("Converged in " + iter + " steps.");
+			if (iteations < maxIterations)
+				System.out.println("Converged in " + iteations + " steps.");
 			else
-				System.out.println("Stopped after " + maxiter + " iterations.");
+				System.out.println("Stopped after " + maxIterations + " iterations.");
 			System.out.println("");
 
 			// calculate similarity sum and map it to the clustering
-			double sumsim = 0;
-			for (double[] c : clusters.keySet()) {
-				TreeSet<Integer> cl = clusters.get(c);
-				for (int vi : cl) {
-					sumsim += cosSim(c, vecspace.get(vi));
+			double similaritySum = 0;
+			for (ArrayList<Double> centerVector : clusters.keySet()) {
+				TreeSet<Integer> docus = clusters.get(centerVector);
+				for (int docId : docus) {
+					similaritySum += computeCosineSimilarity(centerVector, vecspace.get(docId));
 				}
 			}
-			errorsums.put(sumsim, new HashMap<double[], TreeSet<Integer>>(clusters));
+			errorSumMap.put(similaritySum, new HashMap<ArrayList<Double>, TreeSet<Integer>>(clusters));
 
-		}
+			// clear everything for next iteration
+			clusters.clear();
+			tmpClusters.clear();
+			kcenters.clear();
+		} // end of main for loop
+		HashMap<ArrayList<Double>, TreeSet<Integer>> d = errorSumMap.lastEntry().getValue();
 		// pick the clustering with the maximum similarity sum and print the
 		// filenames and indices
 		System.out.println("Best Convergence:");
-		System.out.println(errorsums.get(errorsums.lastKey()).toString().replaceAll("\\[[\\w@]+=", ""));
+		System.out.println(errorSumMap.get(errorSumMap.lastKey()).toString().replaceAll("\\[[\\w@]+=", ""));
 		System.out.print("{");
 		int clusterNo = 1;
-		
-		for (double[] cent : errorsums.get(errorsums.lastKey()).keySet()) {
+		System.out.println("Filenames size: "+filenames.size());
+		for (ArrayList<Double> cent : errorSumMap.get(errorSumMap.lastKey()).keySet()) {
 			System.out.print("[");
-			for (int pts : errorsums.get(errorsums.lastKey()).get(cent)) {
-				System.out.print(filenames.get(pts).substring(0, filenames.get(pts).length() - 1) + ", ");
-				DocEntity dc = inputResults.get(inputMap.get(filenames.get(pts)));
-				dc.setClusterId(clusterNo);
-				clusterResult.add(dc);
-				
+			for (int pts : errorSumMap.get(errorSumMap.lastKey()).get(cent)) {
+				if (pts < filenames.size()) {
+					System.out.print(filenames.get(pts).substring(0, filenames.get(pts).length() - 1) + ", ");
+					DocEntity dc = inputResults.get(inputMap.get(filenames.get(pts)));
+					dc.setClusterId(clusterNo);
+					clusterResult.add(dc);
+					
+				}
+
 			}
 			clusterNo++;
 			System.out.print("\b\b], ");
@@ -150,30 +175,35 @@ public class FlatClustering {
 
 	}
 
-	static double cosSim(double[] a, double[] b) {
-		double dotp = 0, maga = 0, magb = 0;
-		for (int i = 0; i < a.length; i++) {
-			dotp += a[i] * b[i];
-			maga += Math.pow(a[i], 2);
-			magb += Math.pow(b[i], 2);
+	static double computeCosineSimilarity(ArrayList<Double> a, ArrayList<Double> b) {
+		double dotProduct = 0, modA = 0, modB = 0;
+		for (int i = 0; i < a.size(); i++) {
+			dotProduct += a.get(i) * b.get(i);
+			modA += Math.pow(a.get(i), 2);
+			modB += Math.pow(b.get(i), 2);
 		}
-		maga = Math.sqrt(maga);
-		magb = Math.sqrt(magb);
-		double d = dotp / (maga * magb);
-		return d == Double.NaN ? 0 : d;
+		modA = Math.sqrt(modA);
+		modB = Math.sqrt(modB);
+
+		if ((modA != 0) || (modB != 0)) {
+			return dotProduct / (modA * modB);
+		}
+		else
+			return 0;
 	}
 
-	static double tf(String[] doc, String term) {
+
+	static double tf(ArrayList<String> doc, String term) {
 		double n = 0;
 		for (String s : doc)
 			if (s.equalsIgnoreCase(term))
 				n++;
-		return n / doc.length;
+		return n / doc.size();
 	}
 
-	static double idf(ArrayList<String[]> docs, String term) {
+	static double idf(ArrayList<ArrayList<String>> docs, String term) {
 		double n = 0;
-		for (String[] x : docs)
+		for (ArrayList<String> x : docs)
 			for (String s : x)
 				if (s.equalsIgnoreCase(term)) {
 					n++;
