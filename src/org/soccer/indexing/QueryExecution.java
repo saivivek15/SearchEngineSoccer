@@ -70,7 +70,7 @@ public class QueryExecution {
 
 			DocEntity dr = new DocEntity();
 			dr.setContents(build.toString());
-			//dr.setTitleOfDoc(d.get("title"));
+			dr.setTitle(d.get("title"));
 			dr.setUrl(d.get("url"));
 			dr.setHitScore(hits[i].score);
 			drList.add(dr);

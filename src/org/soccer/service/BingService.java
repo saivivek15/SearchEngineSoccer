@@ -66,6 +66,7 @@ public class BingService {
 		    	DocEntity d = new DocEntity();
 		    	d.setUrl(pages.get(i).getAsJsonObject().get("url").toString());
 		    	d.setContents(pages.get(i).getAsJsonObject().get("snippet").toString());
+		    	d.setTitle(pages.get(i).getAsJsonObject().get("name").toString());
 		    	results.add(d);
 		    }
 		    

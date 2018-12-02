@@ -3,8 +3,7 @@ package org.soccer.service;
 import java.io.File;
 import java.util.ArrayList;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.log4j.Logger;
 import org.soccer.indexing.DocEntity;
 import org.soccer.indexing.IndexCreator;
 import org.soccer.indexing.QueryExecution;
@@ -13,8 +12,7 @@ import org.springframework.stereotype.Service;
 @Service
 public class HomeService {
 
-	private static final Logger logger = LoggerFactory.getLogger(HomeService.class);
-
+	final static Logger logger = Logger.getLogger(HomeService.class);
 	public ArrayList<DocEntity> getDocEntites(String query) throws Exception {
 
 		try {

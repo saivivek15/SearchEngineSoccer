@@ -20,8 +20,8 @@ public class GoogleService {
 	public ArrayList<DocEntity> getGoogleAPIResults(String searchText) throws IOException, JSONException {
 		ArrayList<DocEntity> googleDE = new ArrayList<>();
 		
-		String key = "AIzaSyD138V19Q2043f37KsjJoxZtmDVMhBUQ3E";
-		String cx = "003337752057909681064:9yt6jiiy32s"; //
+		String key = "AIzaSyC5pS1dyRJQuX800uMKLSWf7zRMm6PB9_I";
+		String cx = "001071243830596144542:0w8h0tjv87m"; //
 		
 		URL url = new URL("https://www.googleapis.com/customsearch/v1?key="+ key + "&cx=" + cx + "&q="+ URLEncoder.encode(searchText, "UTF-8") + "&alt=json");
 		HttpURLConnection connection = (HttpURLConnection) url.openConnection();
@@ -43,6 +43,7 @@ public class GoogleService {
 					DocEntity d = new DocEntity();
 					d.setUrl(items.getJSONObject(i).getString("link"));
 					d.setContents(items.getJSONObject(i).getString("snippet"));
+					d.setTitle(items.getJSONObject(i).getString("title"));
 					googleDE.add(d);
 				}
 			}

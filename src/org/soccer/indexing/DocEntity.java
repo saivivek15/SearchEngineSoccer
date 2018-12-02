@@ -6,6 +6,7 @@ public class DocEntity {
 	private String contents;
 	private String url;
 	private String filename;
+	private String title;
 	private float hitScore;
 	private int clusterId;
 	private float rankScore;
@@ -45,6 +46,12 @@ public class DocEntity {
 	}
 	public void setRankScore(float rankScore) {
 		this.rankScore = rankScore;
+	}
+	public String getTitle() {
+		return title;
+	}
+	public void setTitle(String title) {
+		this.title = title;
 	}
 	
 	
