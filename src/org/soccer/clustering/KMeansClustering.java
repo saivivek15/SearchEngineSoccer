@@ -62,9 +62,9 @@ public class KMeansClustering {
 		HashMap<ArrayList<Double>, TreeSet<Integer>> tmpClusters = new HashMap<ArrayList<Double>, TreeSet<Integer>>();
 		HashSet<Integer> kcenters = new HashSet<Integer>();
 		TreeMap<Double, HashMap<ArrayList<Double>, TreeSet<Integer>>> errorSumMap = new TreeMap<Double, HashMap<ArrayList<Double>, TreeSet<Integer>>>();
-		int k = 3;
-		int maxIterations = 500;
-		for (int loopCnt = 0; loopCnt < 200; loopCnt++) {
+		int k = 12;
+		int maxIterations = 5;
+		for (int loopCnt = 0; loopCnt < 2; loopCnt++) {
 
 			// randomly initialize cluster centers
 			while (kcenters.size() < k)
