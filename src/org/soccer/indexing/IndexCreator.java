@@ -2,6 +2,7 @@ package org.soccer.indexing;
 
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -33,18 +34,21 @@ public class IndexCreator {
     String urlLocation = "/Users/vivek/Desktop/urls.txt/";
 
     public HashMap<String, String> urlMap = new HashMap<>();
-
-    public void readFiles() throws Exception {
-    	ComputePageRank cpr = new ComputePageRank();
-    	VertexScoringAlgorithm<String, Double> pr= cpr.getPageRank();
-    	getUrlsMap(urlLocation);
-        File[] listOfFiles = new File(docLocation).listFiles();
-        for (File file : listOfFiles) {
-            indexFileOrDirectory(file.getAbsolutePath(), file.getName(),pr);
-            System.out.println(file.getName());
-        }
-        closeIndex();
+    public HashMap<String, String> fileContentMap = new HashMap<>();
+    public HashMap<String, String> fileTitleMap = new HashMap<>();
+    public HashMap<String, String> fileClusterIdMap = new HashMap<>();
+    
+    
+    public String preProcess(String line) {
+        line = line.replaceAll("\\'s", ""); //Remove possessives
+        line = line.replaceAll("[&+:;,=?@#|'<>.^$*()%\\!/\"]", ""); //Remove special chars
+        line = line.replaceAll("-|\\s+", " "); //Replace - and multi space with single space
+        line = line.trim(); //remove any extra spaces
+        line = line.toLowerCase(); //Convert all chars to lower case
+        return line;
     }
+
+    
     public void getUrlsMap(String urlLocation) throws IOException{
     	FileReader fr = new FileReader(new File(urlLocation));
     	BufferedReader br = new BufferedReader(fr);
@@ -55,7 +59,47 @@ public class IndexCreator {
         		urlMap.put(tmp[0], tmp[1]);
         	}
         }
+        fr.close();
     }
+    
+    public void getFileContents() throws IOException{
+    	File[] listOfFiles = new File(docLocation).listFiles();
+    	FileReader fr = null;
+
+        BufferedReader bufferedReader;
+        for (File file : listOfFiles) {
+        	fr = new FileReader(file.getAbsolutePath());
+        	bufferedReader = new BufferedReader(fr);
+            StringBuilder str = new StringBuilder();
+            String line="";
+            while ((line = bufferedReader.readLine()) != null) {
+            	str.append(line);
+            	str.append(" ");
+            }
+            
+            String title = str.toString().split("::")[0];
+            String content = preProcess(str.toString());
+            fileContentMap.put(file.getName().split(".t")[0], content);
+        	fileTitleMap.put(file.getName().split(".t")[0], title);
+        } 
+        fr.close();
+
+    }
+    
+    public void readFiles() throws Exception {
+    	ComputePageRank cpr = new ComputePageRank();
+    	VertexScoringAlgorithm<String, Double> pr= cpr.getPageRank();
+    	getUrlsMap(urlLocation);
+    	getFileContents();
+    	//fileClusterIdMap = getClusterMap();
+        File[] listOfFiles = new File(docLocation).listFiles();
+        for (File file : listOfFiles) {
+            indexFileOrDirectory(file.getName(),pr);
+            System.out.println(file.getName());
+        }
+        closeIndex();
+    }
+    
     public IndexCreator(String indexDir) throws IOException {
     //	FSDirectory dir = FSDirectory.open(FileSystems.getDefault().getPath(indexDir));
         FSDirectory dir = FSDirectory.open(new File(indexDir));
@@ -64,6 +108,45 @@ public class IndexCreator {
     }
 
 
+
+    public void indexFileOrDirectory(String fileNameOnly, VertexScoringAlgorithm<String, Double> pr) throws Exception {
+
+//    	String line = "";
+        String url = urlMap.get(fileNameOnly.split(".t")[0]);
+//        FileReader fr = new FileReader(fileName);
+//        StringBuilder str = new StringBuilder();
+//        BufferedReader bufferedReader = new BufferedReader(fr);
+//        while ((line = bufferedReader.readLine()) != null) {
+//        	str.append(line);
+//        	str.append(" ");
+//        }
+        try {
+        	//String content = preProcess(str.toString());
+        	String content = fileContentMap.get(fileNameOnly.split(".t")[0]);
+        	//String title = str.toString().split("::")[0];
+        	String title = fileTitleMap.get(fileNameOnly.split(".t")[0]);
+        	String clusterId = fileClusterIdMap.get(fileNameOnly.split(".t")[0]);
+            Document doc = new Document();
+            Field f = new Field("content", content, Field.Store.YES, Field.Index.ANALYZED,Field.TermVector.WITH_POSITIONS_OFFSETS);
+            f.setBoost(2000*pr.getVertexScore(fileNameOnly.split(".t")[0]).floatValue());
+            doc.add(f);
+            doc.add(new StringField("title", title, Field.Store.YES));
+            doc.add(new StringField("filename", fileNameOnly, Field.Store.YES));
+            doc.add(new StringField("url", url, Field.Store.YES));
+            doc.add(new StringField("clusterId", clusterId, Field.Store.YES));
+            writer.addDocument(doc);
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        } 
+        
+
+
+    }
+    
+    public void closeIndex() throws IOException {
+        writer.close();
+    }
+    
     public static void main(String[] args) throws Exception {
         IndexCreator index = new IndexCreator(IndexCreator.indexLocation);
         index.readFiles();
@@ -125,49 +208,5 @@ public class IndexCreator {
 		}
     }
     
-    public String preProcess(String line) {
-        line = line.replaceAll("\\'s", ""); //Remove possessives
-        line = line.replaceAll("[&+:;,=?@#|'<>.^$*()%\\!/\"]", ""); //Remove special chars
-        line = line.replaceAll("-|\\s+", " "); //Replace - and multi space with single space
-        line = line.trim(); //remove any extra spaces
-        line = line.toLowerCase(); //Convert all chars to lower case
-        return line;
-    }
-
-    public void indexFileOrDirectory(String fileName, String fileNameOnly, VertexScoringAlgorithm<String, Double> pr) throws Exception {
-
-    	String line = "";
-        String url = urlMap.get(fileNameOnly.split(".t")[0]);
-        FileReader fr = new FileReader(fileName);
-        StringBuilder str = new StringBuilder();
-        BufferedReader bufferedReader = new BufferedReader(fr);
-        while ((line = bufferedReader.readLine()) != null) {
-        	str.append(line);
-        	str.append(" ");
-        }
-        try {
-        	String content = preProcess(str.toString());
-        	String title = str.toString().split("::")[0];
-            Document doc = new Document();
-            Field f = new Field("content", content, Field.Store.YES, Field.Index.ANALYZED,Field.TermVector.WITH_POSITIONS_OFFSETS);
-            f.setBoost(2000*pr.getVertexScore(fileNameOnly.split(".t")[0]).floatValue());
-            doc.add(f);
-            doc.add(new StringField("title", title, Field.Store.YES));
-            doc.add(new StringField("filename", fileNameOnly, Field.Store.YES));
-            doc.add(new StringField("url", url, Field.Store.YES));
-            writer.addDocument(doc);
-        } catch (Exception e) {
-            System.out.println(e.getMessage());
-        } finally {
-            fr.close();
-        }
-        
-
-
-    }
-    
-    public void closeIndex() throws IOException {
-        writer.close();
-    }
 
 }
