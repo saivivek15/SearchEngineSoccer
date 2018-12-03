@@ -11,6 +11,9 @@ import org.soccer.indexing.DocEntity;;
 
 /**
  * @author Satya A C Obellaneni
+ * 
+ * referred from "https://github.com/lbehnke/hierarchical-clustering-java"
+ *  which has Apache open source license
  *
  */
 public class FlatClustering {
@@ -206,9 +209,9 @@ public class FlatClustering {
 
 	static double idf(ArrayList<ArrayList<String>> docs, String term) {
 		double n = 0;
-		for (ArrayList<String> x : docs)
-			for (String s : x)
-				if (s.equalsIgnoreCase(term)) {
+		for (ArrayList<String> tmp : docs)
+			for (String token : tmp)
+				if (token.equalsIgnoreCase(term)) {
 					n++;
 					break;
 				}

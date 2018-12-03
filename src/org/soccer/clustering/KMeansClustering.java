@@ -13,6 +13,13 @@ import java.util.Set;
 import java.util.TreeMap;
 import java.util.TreeSet;
 
+/*
+ * @author Satya A C Obellaneni
+ * 
+ * referred from "https://github.com/lbehnke/hierarchical-clustering-java"
+ *  which has Apache open source license
+ */
+
 public class KMeansClustering {
 
 	public ArrayList<String> fileNames = new ArrayList<>();
@@ -218,8 +225,8 @@ public class KMeansClustering {
 
 	public double tf(ArrayList<String> doc, String term) {
 		double n = 0;
-		for (String s : doc)
-			if (s.equalsIgnoreCase(term))
+		for (String token : doc)
+			if (token.equalsIgnoreCase(term))
 				n++;
 		return n / doc.size();
 	}

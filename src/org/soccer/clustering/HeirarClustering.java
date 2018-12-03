@@ -26,6 +26,9 @@ import com.apporiented.algorithm.clustering.WeightedLinkageStrategy;;
 
 /**
  * @author Satya A C Obellaneni
+ * 
+ * referred from "https://github.com/lbehnke/hierarchical-clustering-java"
+ *  which has Apache open source license
  *
  */
 
@@ -127,30 +130,11 @@ public class HeirarClustering {
 		return tokensList;
 	}
 
-	static double tf(ArrayList<String> docWords, String term) {
-		double count = 0;
-		for (String s : docWords)
-			if (s.equalsIgnoreCase(term))
-				count++;
-		return count / docWords.size();
-	}
-
-	static double idf(int term) {
-		double count = 0;
-		for (ArrayList<String> x : docWordsList)
-			for (String s : x)
-				if (s.equalsIgnoreCase(totalWordsInAllDocs.get(term))) {
-					count++;
-					break;
-				}
-		return Math.log(docWordsList.size() / count);
-	}
-
 	public static ArrayList<DocEntity> getSingleLinkageCluster(ArrayList<DocEntity> inputResults) {
 		ArrayList<DocEntity> clusterResult = new ArrayList<>();
 		ArrayList<String[]> docs = new ArrayList<String[]>();
-		ArrayList<String> global = new ArrayList<String>();
-		ArrayList<String> inputs = new ArrayList<String>();
+		ArrayList<String> totalTokens = new ArrayList<String>();
+		ArrayList<String> inputList = new ArrayList<String>();
 
 		for (int i = 0; i < inputResults.size() && i < 20; i++) {
 			StringBuffer sb = new StringBuffer();
@@ -159,39 +143,39 @@ public class HeirarClustering {
 
 			String url = document.getUrl();
 			inputMap.put(url, i);
-			inputs.add(url + ", " + document.getContents());
+			inputList.add(url + ", " + document.getContents());
 			sb.append(document.getContents());
 
 			// input cleaning regex
-			String[] d = sb.toString().toLowerCase().replaceAll("[\\W&&[^\\s]]", "").replaceAll("[^a-zA-Z\\s]", "")
+			String[] doc = sb.toString().toLowerCase().replaceAll("[\\W&&[^\\s]]", "").replaceAll("[^a-zA-Z\\s]", "")
 					.replaceAll("\\s+", " ").split("\\W+");
-			for (String u : d)
-				if (!global.contains(u))
-					global.add(u);
-			docs.add(d);
+			for (String u : doc)
+				if (!totalTokens.contains(u))
+					totalTokens.add(u);
+			docs.add(doc);
 		}
 		//
 
 		// compute tf-idf and create document vectors (double[])
-		ArrayList<double[]> vecspace = new ArrayList<double[]>();
+		ArrayList<double[]> docVectors = new ArrayList<double[]>();
 		for (String[] s : docs) {
-			double[] d = new double[global.size()];
-			for (int i = 0; i < global.size(); i++)
-				d[i] = tf(s, global.get(i)) * idf(docs, global.get(i));
-			vecspace.add(d);
+			double[] d = new double[totalTokens.size()];
+			for (int i = 0; i < totalTokens.size(); i++)
+				d[i] = tf(s, totalTokens.get(i)) * idf(docs, totalTokens.get(i));
+			docVectors.add(d);
 		}
 
 		ArrayList<Double> cosineSimilarities = new ArrayList<Double>();
-		for (int i = 0; i < vecspace.size(); i++) {
-			for (int j = i + 1; j < vecspace.size(); j++) {
-				double[] first = vecspace.get(i);
-				double[] second = vecspace.get(j);
+		for (int i = 0; i < docVectors.size(); i++) {
+			for (int j = i + 1; j < docVectors.size(); j++) {
+				double[] first = docVectors.get(i);
+				double[] second = docVectors.get(j);
 				cosineSimilarities.add(cosineSim(first, second));
 			}
 		}
-		inputArray = new String[inputs.size()];
-		for (int i = 0; i < inputs.size(); i++) {
-			inputArray[i] = inputs.get(i);
+		inputArray = new String[inputList.size()];
+		for (int i = 0; i < inputList.size(); i++) {
+			inputArray[i] = inputList.get(i);
 		}
 		pdist = new double[1][cosineSimilarities.size()];
 		for (int i = 0; i < cosineSimilarities.size(); i++) {
@@ -239,34 +223,36 @@ public class HeirarClustering {
 		return clusterResult;
 	}
 
-	static double cosineSim(double[] docVector1, double[] docVector2) {
-		double dProduct = 0, magOfA = 0, magOfB = 0;
-		for (int i = 0; i < docVector1.length; i++) {
-			dProduct += docVector1[i] * docVector2[i];
-			magOfA += Math.pow(docVector1[i], 2);
-			magOfB += Math.pow(docVector2[i], 2);
+	static double cosineSim(double[] a, double[] b) {
+		double dotProduct = 0, modA = 0, modB = 0;
+		for (int i = 0; i < a.length; i++) {
+			dotProduct += a[i] * b[i];
+			modA += Math.pow(a[i], 2);
+			modB += Math.pow(b[i], 2);
 		}
-		magOfA = Math.sqrt(magOfA);
-		magOfB = Math.sqrt(magOfB);
-		if ((magOfA != 0) || (magOfB != 0))
-			return dProduct / (magOfA * magOfB);
+		modA = Math.sqrt(modA);
+		modB = Math.sqrt(modB);
+
+		if ((modA != 0) || (modB != 0)) {
+			return dotProduct / (modA * modB);
+		}
 		else
-			return 0.0;
+			return 0;
 	}
 
 	static double tf(String[] doc, String term) {
 		double n = 0;
-		for (String s : doc)
-			if (s.equalsIgnoreCase(term))
+		for (String token : doc)
+			if (token.equalsIgnoreCase(term))
 				n++;
 		return n / doc.length;
 	}
 
 	static double idf(ArrayList<String[]> docs, String term) {
 		double n = 0;
-		for (String[] x : docs)
-			for (String s : x)
-				if (s.equalsIgnoreCase(term)) {
+		for (String[] tmp : docs)
+			for (String token : tmp)
+				if (token.equalsIgnoreCase(term)) {
 					n++;
 					break;
 				}
