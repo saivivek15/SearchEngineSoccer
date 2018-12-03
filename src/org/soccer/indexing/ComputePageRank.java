@@ -13,8 +13,8 @@ import org.jgrapht.graph.Pseudograph;
 
 public class ComputePageRank {
 	
-	static String graphLocation = "/Users/vivek/Desktop/graph.txt/";
-	static String urlLocation = "/Users/vivek/Desktop/urls.txt/";
+	static String graphLocation = "/Users/sobellan/Desktop/graph.txt/";
+	static String urlLocation = "/Users/sobellan/Desktop/urls.txt/";
 	
 	public VertexScoringAlgorithm<String, Double> getPageRank( ) throws IOException{
 		Pseudograph<String, DefaultEdge> g = new Pseudograph<>(DefaultEdge.class);

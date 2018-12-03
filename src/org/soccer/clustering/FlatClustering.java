@@ -1,12 +1,12 @@
 package org.soccer.clustering;
 
-import java.io.BufferedReader;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.TreeMap;
+import java.util.TreeSet;
 
-import net.sf.json.JSONArray;
-import net.sf.json.JSONObject;
 import org.soccer.indexing.DocEntity;;
 
 /**
@@ -15,26 +15,26 @@ import org.soccer.indexing.DocEntity;;
  */
 public class FlatClustering {
 
-	public static ArrayList<DocEntity> getFlatCluster(ArrayList<DocEntity> inputResults) {
+	public static ArrayList<DocEntity> getFlatCluster(ArrayList<DocEntity> inputList) {
 		ArrayList<DocEntity> clusterResult = new ArrayList<>();
 		ArrayList<ArrayList<String>> docs = new ArrayList<>();
 		ArrayList<String> filenames = new ArrayList<String>();
-		ArrayList<String> global = new ArrayList<String>();
+		ArrayList<String> totalTokens = new ArrayList<String>();
 		HashMap<String, Integer> inputMap = new HashMap<>();
-	//	HashMap<String,Float> rankMap = new HashMap<>();
-		for (int i = 0; i < inputResults.size(); i++) {
+		HashMap<String,Float> rankMap = new HashMap<>();
+		for (int i = 0; i < inputList.size(); i++) {
 			StringBuffer sb = new StringBuffer();
 			DocEntity document = new DocEntity();
-			document = inputResults.get(i);
+			document = inputList.get(i);
 			inputMap.put(document.getUrl(), i);
-		//	rankMap.put(document.getUrl(), document.getHitScore());
+			rankMap.put(document.getUrl(), document.getHitScore());
 			sb.append(document.getContents());
 			// input cleaning regex
 			String[] d = sb.toString().toLowerCase().replaceAll("[\\W&&[^\\s]]", "").replaceAll("[^a-zA-Z\\s]", "")
 					.replaceAll("\\s+", " ").trim().split("\\W+");
 			for (String u : d)
-				if (!global.contains(u))
-					global.add(u);
+				if (!totalTokens.contains(u))
+					totalTokens.add(u);
 			
 			docs.add(new ArrayList<String>(Arrays.asList(d)));
 			
@@ -43,12 +43,12 @@ public class FlatClustering {
 			}
 		}
 
-		ArrayList<ArrayList<Double>> vecspace = new ArrayList<ArrayList<Double>>();
+		ArrayList<ArrayList<Double>> docVectors = new ArrayList<ArrayList<Double>>();
 		for (ArrayList<String> doc : docs) {
 			ArrayList<Double> docVector = new ArrayList<Double>();
-			for (String token:global)
+			for (String token:totalTokens)
 				docVector.add(tf(doc, token) * idf(docs, token));
-			vecspace.add(docVector);
+			docVectors.add(docVector);
 		}
 
 		// iterate k-means
@@ -56,29 +56,31 @@ public class FlatClustering {
 		HashMap<ArrayList<Double>, TreeSet<Integer>> tmpClusters = new HashMap<ArrayList<Double>, TreeSet<Integer>>();
 		HashSet<Integer> kcenters = new HashSet<Integer>();
 		TreeMap<Double, HashMap<ArrayList<Double>, TreeSet<Integer>>> errorSumMap = new TreeMap<Double, HashMap<ArrayList<Double>, TreeSet<Integer>>>();
-		int k = 10;
+		int k = 3;
 		int maxIterations = 10;
 		
 		for (int loopCnt = 0; loopCnt < 2; loopCnt++) {
 
 			// randomly initialize cluster centers
 			while (kcenters.size() < k)
-				kcenters.add((int) (Math.random() * vecspace.size()));
+				kcenters.add((int) (Math.random() * docVectors.size()));
 
 			for (int center : kcenters) {
-				tmpClusters.put(vecspace.get(center), new TreeSet<Integer>());
+				tmpClusters.put(docVectors.get(center), new TreeSet<Integer>());
 			}
 
 			int iteations = 0;
+			int test = 1;
 			while (true) {
+				System.out.println("In while: "+test++);
 				clusters = new HashMap<ArrayList<Double>, TreeSet<Integer>>(tmpClusters);
 
 				// assign clusters to the documents
-				for (int i = 0; i < vecspace.size(); i++) {
+				for (int i = 0; i < docVectors.size(); i++) {
 					ArrayList<Double> centroid = null;
 					double similarity = 0;
 					for (ArrayList<Double> vector : clusters.keySet()) {
-						double cosineSimilarity = computeCosineSimilarity(vecspace.get(i), vector);
+						double cosineSimilarity = computeCosineSimilarity(docVectors.get(i), vector);
 						if (cosineSimilarity >= similarity) {
 							similarity = cosineSimilarity;
 							centroid = vector;
@@ -95,7 +97,7 @@ public class FlatClustering {
 					double[] newCentroid = new double[centroid.size()];
 					ArrayList<Double> tmp = new ArrayList<Double>();
 					for (int docId : clusters.get(centroid)) {
-						ArrayList<Double> docVector = vecspace.get(docId);
+						ArrayList<Double> docVector = docVectors.get(docId);
 						for (int i = 0; i < newCentroid.length; i++)
 							newCentroid[i] += docVector.get(i);
 					}
@@ -137,7 +139,7 @@ public class FlatClustering {
 			for (ArrayList<Double> centerVector : clusters.keySet()) {
 				TreeSet<Integer> docus = clusters.get(centerVector);
 				for (int docId : docus) {
-					similaritySum += computeCosineSimilarity(centerVector, vecspace.get(docId));
+					similaritySum += computeCosineSimilarity(centerVector, docVectors.get(docId));
 				}
 			}
 			errorSumMap.put(similaritySum, new HashMap<ArrayList<Double>, TreeSet<Integer>>(clusters));
@@ -160,7 +162,7 @@ public class FlatClustering {
 			for (int pts : errorSumMap.get(errorSumMap.lastKey()).get(cent)) {
 				if (pts < filenames.size()) {
 					System.out.print(filenames.get(pts).substring(0, filenames.get(pts).length() - 1) + ", ");
-					DocEntity dc = inputResults.get(inputMap.get(filenames.get(pts)));
+					DocEntity dc = inputList.get(inputMap.get(filenames.get(pts)));
 					dc.setClusterId(clusterNo);
 					clusterResult.add(dc);
 					
@@ -212,44 +214,4 @@ public class FlatClustering {
 				}
 		return Math.log(docs.size() / n);
 	}
-
-	public static ArrayList<DocEntity> getKMeansCluster(String query) {
-
-		StockRestConnection conn = new StockRestConnection();
-		ArrayList<DocEntity> clusterResult = null;
-		System.out.println("Sending query to clustering"+query);
-		query = query.replaceAll(" ", "%20");
-		String url = "company" + "/" + query;
-		String outputString = "";
-		InputStream in = conn.getConnection(url, "GET");
-		try {
-			BufferedReader reader = new BufferedReader(new InputStreamReader(in, "iso-8859-1"), 8);
-			StringBuilder sb = new StringBuilder();
-			String line = null;
-			while ((line = reader.readLine()) != null) {
-				sb.append(line + "\n");
-			}
-			outputString = sb.toString();
-			System.out.println("Inside k means======");
-			clusterResult = new ArrayList<>();
-			JSONArray jsonArray = JSONArray.fromObject(outputString);
-			for (int i = 0; i < jsonArray.size(); i++) {
-				JSONObject jsonObject = (JSONObject) jsonArray.get(i);
-				DocEntity dr = new DocEntity();
-				dr.setClusterId((int) jsonObject.get("clusterId"));
-				dr.setUrl(jsonObject.get("url").toString());
-				dr.setContents(jsonObject.get("content").toString());
-				System.out.println(dr.getClusterId());
-				System.out.println(dr.getUrl());
-				clusterResult.add(dr);
-			}
-
-			in.close();
-		} catch (Exception e) {
-			System.out.println("Buffer Error" + "Error converting result " + e.toString());
-		}
-		return clusterResult;
-
-	}
-
 }

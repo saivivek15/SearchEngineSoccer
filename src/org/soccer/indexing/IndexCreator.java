@@ -29,8 +29,8 @@ public class IndexCreator {
     public static Analyzer analyzer = new StandardAnalyzer(Version.LUCENE_42);
     private IndexWriter writer;
     public static String indexLocation = "/Users/sobellan/Desktop/luceneIndex/index_snow.fl";
-    public String docLocation = "/Users/vivek/Desktop/data/";
-    public String urlLocation = "/Users/vivek/Desktop/urls.txt/";
+    public String docLocation = "/Users/sobellan/Desktop/data/";
+    public String urlLocation = "/Users/sobellan/Desktop/urls.txt/";
     
     public HashMap<String, String> urlMap = new HashMap<>();
     public HashMap<String, String> fileContentMap = new HashMap<>();
@@ -173,9 +173,7 @@ public class IndexCreator {
 		
 		if (res.size() > 20) {
 			flatClusteredResult = FlatClustering.getFlatCluster(res);
-			avgClusteredResult = HeirarClustering.getAverageLinkageCluster(res);
 			singleClusteredResult = HeirarClustering.getSingleLinkageCluster(res);
-			weightedClusteredResult = HeirarClustering.getWeightedLinkageCluster(res);
 			completeClusteredResult = HeirarClustering.getCompleteLinkageCluster(res);
 		}
 		

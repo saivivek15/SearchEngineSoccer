@@ -55,7 +55,6 @@ public class HomeController {
 		ArrayList<DocEntity> bingDE = bingService.getBingAPIResults(query);
 		if(de.size()!=0){
 			ArrayList<DocEntity> flatClusterDE = clusteringService.getFlatClusterResult(de);
-			ArrayList<DocEntity> avgClusterDE = clusteringService.getAvgClusterResult(de);
 			ArrayList<DocEntity> singleClusterDE = clusteringService.getSingleClusterResult(de);
 			ArrayList<DocEntity> completeClusterDE = clusteringService.getCompleteClusterResult(de);
 			model.addAttribute("flatClusterDE",flatClusterDE);

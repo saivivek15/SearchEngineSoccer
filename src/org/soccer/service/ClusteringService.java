@@ -21,12 +21,4 @@ public class ClusteringService {
 	public ArrayList<DocEntity> getCompleteClusterResult(ArrayList<DocEntity> docResult2) throws Exception {
 		return HeirarClustering.getCompleteLinkageCluster(docResult2);
 	}
-	
-	public ArrayList<DocEntity> getWeightedClusterResult(ArrayList<DocEntity> docResult3) throws Exception {
-		return HeirarClustering.getWeightedLinkageCluster(docResult3);
-	}
-	
-	public ArrayList<DocEntity> getAvgClusterResult(ArrayList<DocEntity> docResult4) throws Exception {
-		return HeirarClustering.getAverageLinkageCluster(docResult4);
-	}
 }

@@ -146,7 +146,7 @@ public class HeirarClustering {
 		return Math.log(docWordsList.size() / count);
 	}
 
-	public static ArrayList<DocEntity> getAverageLinkageCluster(ArrayList<DocEntity> inputResults) {
+	public static ArrayList<DocEntity> getSingleLinkageCluster(ArrayList<DocEntity> inputResults) {
 		ArrayList<DocEntity> clusterResult = new ArrayList<>();
 		ArrayList<String[]> docs = new ArrayList<String[]>();
 		ArrayList<String> global = new ArrayList<String>();
@@ -198,26 +198,8 @@ public class HeirarClustering {
 			pdist[0][i] = cosineSimilarities.get(i);
 		}
 		ClusteringAlgorithm alg = new PDistClusteringAlgorithm();
-		Cluster cluster = alg.performClustering((double[][]) pdist, inputArray, new AverageLinkageStrategy());
-		System.out.println("Heirrach......==========");
-		System.out.println(cluster.getLeafNames());
-		List<String> result = cluster.getLeafNames();
-		int id = 0;
-		for (String res : result) {
-			id = inputMap.get(res.split(", ")[0]);
-			System.out.println(id);
-			System.out.println(inputResults.get(id).getUrl());
-			clusterResult.add(inputResults.get(id));
-		}
-		return clusterResult;
-	}
-
-	public static ArrayList<DocEntity> getSingleLinkageCluster(ArrayList<DocEntity> inputResults) {
-		ClusteringAlgorithm alg = new PDistClusteringAlgorithm();
 		Cluster cluster = alg.performClustering((double[][]) pdist, inputArray, new SingleLinkageStrategy());
-		ArrayList<DocEntity> clusterResult = new ArrayList<>();
-
-		System.out.println("Single linkage......==========");
+		System.out.println("Single Linkage......==========");
 		System.out.println(cluster.getLeafNames());
 		List<String> result = cluster.getLeafNames();
 		int id = 0;
@@ -225,24 +207,6 @@ public class HeirarClustering {
 			id = inputMap.get(res.split(", ")[0]);
 			System.out.println(id);
 			System.out.println(inputResults.get(id).getUrl());
-			clusterResult.add(inputResults.get(id));
-		}
-		return clusterResult;
-	}
-
-	public static ArrayList<DocEntity> getWeightedLinkageCluster(ArrayList<DocEntity> inputResults) {
-		ClusteringAlgorithm alg = new PDistClusteringAlgorithm();
-		Cluster cluster = alg.performClustering((double[][]) pdist, inputArray, new WeightedLinkageStrategy());
-		ArrayList<DocEntity> clusterResult = new ArrayList<>();
-
-		System.out.println("Weighted linkage......==========");
-		System.out.println(cluster.getLeafNames());
-		List<String> result = cluster.getLeafNames();
-		int id = 0;
-
-		for (String res : result) {
-			id = inputMap.get(res.split(", ")[0]);
-
 			clusterResult.add(inputResults.get(id));
 		}
 		return clusterResult;
