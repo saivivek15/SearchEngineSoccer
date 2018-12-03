@@ -40,7 +40,9 @@ public class IndexCreator {
     
     public String preProcess(String line) {
         line = line.replaceAll("\\'s", ""); //Remove possessives
-        line = line.replaceAll("[&+:;,=?@#|'<>.^$*()%\\!/\"]", ""); //Remove special chars
+        line = line.replaceAll("[&+:;,=?@#|'<>.^$*()%\\!/\"]", "");
+        line = line.replaceAll("\\[", "");
+        line = line.replaceAll("\\]", "");//Remove special chars
         line = line.replaceAll("-|\\s+", " "); //Replace - and multi space with single space
         line = line.trim(); //remove any extra spaces
         line = line.toLowerCase(); //Convert all chars to lower case
@@ -59,6 +61,7 @@ public class IndexCreator {
         		urlMap.put(tmp[0], tmp[1]);
         	}
         }
+        br.close();
     }
     
     
@@ -120,12 +123,13 @@ public class IndexCreator {
         	str.append(line);
         }
         try {
+        	String content = preProcess(str.toString());
         //	String content = fileContentMap.get(fileNameOnly.split(".t")[0]);
         	String title = str.toString().split("::")[0];
             Document doc = new Document();
            // String clusterId = fileClusterIdMap.get(fileNameOnly.split(".t")[0]);
             String clusterId = "1";
-            Field f = new Field("content", str.toString(), Field.Store.YES, Field.Index.ANALYZED,Field.TermVector.WITH_POSITIONS_OFFSETS);
+            Field f = new Field("content", content, Field.Store.YES, Field.Index.ANALYZED,Field.TermVector.WITH_POSITIONS_OFFSETS);
             f.setBoost(2000*pr.getVertexScore(fileNameOnly.split(".t")[0]).floatValue());
             doc.add(f);
             doc.add(new StringField("title", title, Field.Store.YES));
@@ -135,7 +139,9 @@ public class IndexCreator {
             writer.addDocument(doc);
         } catch (Exception e) {
             System.out.println(e.getMessage());
-        } 
+        } finally{
+        	bufferedReader.close();
+        }
         
 
 
@@ -146,8 +152,8 @@ public class IndexCreator {
     }
 
     public static void main(String[] args) throws Exception {
-        //IndexCreator index = new IndexCreator(IndexCreator.indexLocation);
-        //index.readFiles();
+        IndexCreator index = new IndexCreator(IndexCreator.indexLocation);
+        index.readFiles();
 	    ArrayList<DocEntity> res = QueryExecution.processQuery("ronaldo");
 //		for(DocEntity dr: res){
 //			System.out.println("url: "+dr.getUrl());
