@@ -57,19 +57,14 @@ public class HomeController {
 			ArrayList<DocEntity> flatClusterDE = clusteringService.getFlatClusterResult(de);
 			ArrayList<DocEntity> avgClusterDE = clusteringService.getAvgClusterResult(de);
 			ArrayList<DocEntity> singleClusterDE = clusteringService.getSingleClusterResult(de);
-			ArrayList<DocEntity> weightedClusterDE = clusteringService.getWeightedClusterResult(de);
 			ArrayList<DocEntity> completeClusterDE = clusteringService.getCompleteClusterResult(de);
 			model.addAttribute("flatClusterDE",flatClusterDE);
 			model.addAttribute("singleClusterDE",singleClusterDE);
-			model.addAttribute("avgClusterDE",avgClusterDE);
 			model.addAttribute("completeClusterDE",completeClusterDE);
-			model.addAttribute("weightedClusterDE",weightedClusterDE);
 		}else{
 			model.addAttribute("flatClusterDE",new ArrayList<DocEntity>());
 			model.addAttribute("singleClusterDE",new ArrayList<DocEntity>());
-			model.addAttribute("avgClusterDE",new ArrayList<DocEntity>());
 			model.addAttribute("completeClusterDE",new ArrayList<DocEntity>());
-			model.addAttribute("weightedClusterDE",new ArrayList<DocEntity>());
 		}
 
 		String expandQuery = queryExpansionService.getExpandedQuery(query);

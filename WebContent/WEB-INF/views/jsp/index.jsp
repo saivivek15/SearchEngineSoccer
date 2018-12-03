@@ -47,10 +47,8 @@
 				<li><a data-toggle="tab" href="#googleSearch">Google Search</a></li>
 				<li><a data-toggle="tab" href="#bingSearch">Bing Search</a></li>
 				<li><a data-toggle="tab" href="#flatCluster">Flat Cluster</a></li>
-				<li><a data-toggle="tab" href="#singleLinkageCluster">Single Link.</a></li>
-				<li><a data-toggle="tab" href="#avgLinkageCluster">Avg Link.</a></li>
-				<li><a data-toggle="tab" href="#weightedLinkageCluster">Weighted Link.</a></li>
-				<li><a data-toggle="tab" href="#completeLinkageCluster">Complete Link.</a></li>
+				<li><a data-toggle="tab" href="#singleLinkageCluster">Single Link Cluster</a></li>
+				<li><a data-toggle="tab" href="#completeLinkageCluster">Complete Link Cluster</a></li>
 				<li><a data-toggle="tab" href="#qeSearch">Query Expansion</a></li>
 			</ul>
 		</div>
@@ -140,64 +138,6 @@
 				<c:choose>
 					<c:when test="${singleClusterDE.size()!=0}">
 						<c:forEach items="${singleClusterDE}" var="doc"
-							varStatus="recordIndex">
-							<span class="titleres"> <strong><a href='<c:out value="${doc.url}"/>'>
-								${doc.title} </a></strong>
-							</span>
-							<span class="titleres"> <strong><a
-									href='<c:out value="${doc.url}"/>'> </a></strong>
-							</span>
-							<br />
-							<a href='<c:out value="${doc.url}"/>'><c:out
-									value="${doc.url}" /></a>
-							<br>
-										${doc.contents}
-										<br />
-							<br>
-										Cluster Id:  ${doc.clusterId}
-										<br />
-							<br />
-						</c:forEach>
-					</c:when>
-					<c:otherwise>
-						<p>No Result</p>
-					</c:otherwise>
-				</c:choose>
-				<br>
-			</div>
-			<div id="avgLinkageCluster" class="tab-pane fade in active">
-				<c:choose>
-					<c:when test="${avgClusterDE.size()!=0}">
-						<c:forEach items="${avgClusterDE}" var="doc"
-							varStatus="recordIndex">
-							<span class="titleres"> <strong><a href='<c:out value="${doc.url}"/>'>
-								${doc.title} </a></strong>
-							</span>
-							<span class="titleres"> <strong><a
-									href='<c:out value="${doc.url}"/>'> </a></strong>
-							</span>
-							<br />
-							<a href='<c:out value="${doc.url}"/>'><c:out
-									value="${doc.url}" /></a>
-							<br>
-										${doc.contents}
-										<br />
-							<br>
-										Cluster Id:  ${doc.clusterId}
-										<br />
-							<br />
-						</c:forEach>
-					</c:when>
-					<c:otherwise>
-						<p>No Result</p>
-					</c:otherwise>
-				</c:choose>
-				<br>
-			</div>
-			<div id="weightedLinkageCluster" class="tab-pane fade in active">
-				<c:choose>
-					<c:when test="${weightedClusterDE.size()!=0}">
-						<c:forEach items="${weightedClusterDE}" var="doc"
 							varStatus="recordIndex">
 							<span class="titleres"> <strong><a href='<c:out value="${doc.url}"/>'>
 								${doc.title} </a></strong>

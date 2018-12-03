@@ -56,7 +56,7 @@ public class FlatClustering {
 		HashMap<ArrayList<Double>, TreeSet<Integer>> tmpClusters = new HashMap<ArrayList<Double>, TreeSet<Integer>>();
 		HashSet<Integer> kcenters = new HashSet<Integer>();
 		TreeMap<Double, HashMap<ArrayList<Double>, TreeSet<Integer>>> errorSumMap = new TreeMap<Double, HashMap<ArrayList<Double>, TreeSet<Integer>>>();
-		int k = 4;
+		int k = 10;
 		int maxIterations = 10;
 		
 		for (int loopCnt = 0; loopCnt < 2; loopCnt++) {
@@ -171,6 +171,7 @@ public class FlatClustering {
 			System.out.print("\b\b], ");
 		}
 		System.out.println("\b\b}");
+		System.out.println("Cluster Result Size: "+clusterResult.size());
 		return clusterResult;
 
 	}
