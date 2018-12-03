@@ -29,17 +29,16 @@ public class GoogleService {
 		HttpURLConnection connection = (HttpURLConnection) url.openConnection();
 		connection.setRequestMethod("GET");
 		connection.setRequestProperty("Accept", "application/json");
-		
-		BufferedReader br = new BufferedReader(new InputStreamReader(connection.getInputStream()));
-		String line;
-		StringBuilder response = new StringBuilder();
-		while ((line = br.readLine()) != null) {
-			response.append(line);
-		}
-		if (response != null) {
+		try{
+			BufferedReader br = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+			String line;
+			StringBuilder response = new StringBuilder();
+			while ((line = br.readLine()) != null) {
+				response.append(line);
+			}
+			if (response != null) {
 
-			JSONObject obj = new JSONObject(response.toString());
-			try{
+				JSONObject obj = new JSONObject(response.toString());
 				JSONArray items = obj.getJSONArray("items");
 				for (int i = 0; i < items.length(); i++) {
 					DocEntity d = new DocEntity();
@@ -48,12 +47,14 @@ public class GoogleService {
 					d.setTitle(items.getJSONObject(i).getString("title"));
 					googleDE.add(d);
 				}
+			
 			}
-			catch(Exception e){
-				
-				 System.out.println(e.getMessage());
-			}
+		}catch(Exception e){
+			
+			 System.out.println(e.getMessage());
 
+		}finally{
+			connection.disconnect();
 		}
 		return googleDE;
 	}

@@ -2,7 +2,6 @@ package org.soccer.indexing;
 
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -23,16 +22,16 @@ import org.soccer.clustering.HeirarClustering;
 
 
 
+
 public class IndexCreator {
 
 
     public static Analyzer analyzer = new StandardAnalyzer(Version.LUCENE_42);
     private IndexWriter writer;
-
     public static String indexLocation = "/Users/vivek/Desktop/luceneIndex/index_snow.fl";
-    String docLocation = "/Users/vivek/Desktop/data/";
-    String urlLocation = "/Users/vivek/Desktop/urls.txt/";
-
+    public String docLocation = "/Users/vivek/Desktop/data/";
+    public String urlLocation = "/Users/vivek/Desktop/urls.txt/";
+    
     public HashMap<String, String> urlMap = new HashMap<>();
     public HashMap<String, String> fileContentMap = new HashMap<>();
     public HashMap<String, String> fileTitleMap = new HashMap<>();
@@ -47,7 +46,8 @@ public class IndexCreator {
         line = line.toLowerCase(); //Convert all chars to lower case
         return line;
     }
-
+    
+    
     
     public void getUrlsMap(String urlLocation) throws IOException{
     	FileReader fr = new FileReader(new File(urlLocation));
@@ -59,8 +59,8 @@ public class IndexCreator {
         		urlMap.put(tmp[0], tmp[1]);
         	}
         }
-        fr.close();
     }
+    
     
     public void getFileContents() throws IOException{
     	File[] listOfFiles = new File(docLocation).listFiles();
@@ -81,6 +81,7 @@ public class IndexCreator {
             String content = preProcess(str.toString());
             fileContentMap.put(file.getName().split(".t")[0], content);
         	fileTitleMap.put(file.getName().split(".t")[0], title);
+        	System.out.println(file.getName());
         } 
         fr.close();
 
@@ -90,15 +91,15 @@ public class IndexCreator {
     	ComputePageRank cpr = new ComputePageRank();
     	VertexScoringAlgorithm<String, Double> pr= cpr.getPageRank();
     	getUrlsMap(urlLocation);
-    	getFileContents();
-    	//fileClusterIdMap = getClusterMap();
+    	//getFileContents();
         File[] listOfFiles = new File(docLocation).listFiles();
         for (File file : listOfFiles) {
-            indexFileOrDirectory(file.getName(),pr);
+            indexFileOrDirectory(file.getAbsolutePath(),file.getName(), pr);
             System.out.println(file.getName());
         }
         closeIndex();
     }
+    
     
     public IndexCreator(String indexDir) throws IOException {
     //	FSDirectory dir = FSDirectory.open(FileSystems.getDefault().getPath(indexDir));
@@ -108,26 +109,23 @@ public class IndexCreator {
     }
 
 
-
-    public void indexFileOrDirectory(String fileNameOnly, VertexScoringAlgorithm<String, Double> pr) throws Exception {
-
-//    	String line = "";
+    
+    public void indexFileOrDirectory( String fileName, String fileNameOnly, VertexScoringAlgorithm<String, Double> pr) throws Exception {
+        String line = "";
         String url = urlMap.get(fileNameOnly.split(".t")[0]);
-//        FileReader fr = new FileReader(fileName);
-//        StringBuilder str = new StringBuilder();
-//        BufferedReader bufferedReader = new BufferedReader(fr);
-//        while ((line = bufferedReader.readLine()) != null) {
-//        	str.append(line);
-//        	str.append(" ");
-//        }
+        FileReader fr = new FileReader(fileName);
+        StringBuilder str = new StringBuilder();
+        BufferedReader bufferedReader = new BufferedReader(fr);
+        while ((line = bufferedReader.readLine()) != null) {
+        	str.append(line);
+        }
         try {
-        	//String content = preProcess(str.toString());
-        	String content = fileContentMap.get(fileNameOnly.split(".t")[0]);
-        	//String title = str.toString().split("::")[0];
-        	String title = fileTitleMap.get(fileNameOnly.split(".t")[0]);
-        	String clusterId = fileClusterIdMap.get(fileNameOnly.split(".t")[0]);
+        //	String content = fileContentMap.get(fileNameOnly.split(".t")[0]);
+        	String title = str.toString().split("::")[0];
             Document doc = new Document();
-            Field f = new Field("content", content, Field.Store.YES, Field.Index.ANALYZED,Field.TermVector.WITH_POSITIONS_OFFSETS);
+           // String clusterId = fileClusterIdMap.get(fileNameOnly.split(".t")[0]);
+            String clusterId = "1";
+            Field f = new Field("content", str.toString(), Field.Store.YES, Field.Index.ANALYZED,Field.TermVector.WITH_POSITIONS_OFFSETS);
             f.setBoost(2000*pr.getVertexScore(fileNameOnly.split(".t")[0]).floatValue());
             doc.add(f);
             doc.add(new StringField("title", title, Field.Store.YES));
@@ -146,20 +144,20 @@ public class IndexCreator {
     public void closeIndex() throws IOException {
         writer.close();
     }
-    
-    public static void main(String[] args) throws Exception {
-        IndexCreator index = new IndexCreator(IndexCreator.indexLocation);
-        index.readFiles();
-	    ArrayList<DocEntity> res = QueryExecution.processQuery("ronaldo");
-		for(DocEntity dr: res){
-			System.out.println("url: "+dr.getUrl());
-			System.out.println("hits: "+dr.getHitScore());
-			System.out.println("rank score: "+dr.getRankScore());
-			System.out.println("cluster id: "+dr.getClusterId());
-			System.out.println("contents: "+ dr.getContents());
-			System.out.println("#############################");
 
-		}
+    public static void main(String[] args) throws Exception {
+        //IndexCreator index = new IndexCreator(IndexCreator.indexLocation);
+        //index.readFiles();
+	    ArrayList<DocEntity> res = QueryExecution.processQuery("ronaldo");
+//		for(DocEntity dr: res){
+//			System.out.println("url: "+dr.getUrl());
+//			System.out.println("hits: "+dr.getHitScore());
+//			System.out.println("rank score: "+dr.getRankScore());
+//			System.out.println("cluster id: "+dr.getClusterId());
+//			System.out.println("contents: "+ dr.getContents());
+//			System.out.println("#############################");
+//
+//		}
 		
 		ArrayList<DocEntity> flatClusteredResult = new ArrayList<>();
 		ArrayList<DocEntity> avgClusteredResult = new ArrayList<>();
@@ -207,6 +205,6 @@ public class IndexCreator {
 			System.out.println("Cluster name: " + dr.getClusterId());
 		}
     }
-    
 
 }
+
